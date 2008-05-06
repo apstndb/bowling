@@ -51,7 +51,7 @@ int main() {
 	World = new btDiscreteDynamicsWorld(Dispatcher, BroadPhase, Solver, CollisionConfiguration);
 	
 	// Add camera
-	ICameraSceneNode *Camera = irrScene->addCameraSceneNodeFPS(0, 100, 10);
+	ICameraSceneNode *Camera = irrScene->addCameraSceneNode();
 	Camera->setPosition(vector3df(0, 5, -5));
 	Camera->setTarget(vector3df(0, 0, 0));
 
