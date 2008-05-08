@@ -1,7 +1,11 @@
 #include "Prototype.h"
 #include "bullet/btBulletDynamicsCommon.h"
-class irr::scene::IAnimatedMesh;
-
+namespace irr {
+  namespace scene {
+    class IAnimatedMesh;
+    class ISceneNode;
+  }
+}
 class MeshPrototype : public Prototype
 {
   private:
