@@ -6,6 +6,7 @@
 #include "CreateSphere.h"
 #include "CreateBox.h"
 #include "CreateMesh.h"
+#include "SetupPins.h"
 #include <bullet/btBulletDynamicsCommon.h>
 using namespace irr;
 using namespace core;
@@ -21,11 +22,14 @@ bool EventReceiverClass::OnEvent(const irr::SEvent &TEvent) {
         break;
       case KEY_KEY_2:
         //CreateSphere(btVector3(GetRandInt(10) - 5.0f, 7.0f, GetRandInt(10) - 5.0f), GetRandInt(5) / 5.0f + 0.2f, 1.0f);
-        CreateSphere(btVector3(GetRandInt(10) - 5.0f, 1.0f, GetRandInt(10) - 5.0f), GetRandInt(5) / 5.0f + 0.2f, 1.0f);//, &btVector3(0, 1, 0));
+        CreateSphere(btVector3(GetRandInt(10) - 5.0f, 1.0f, GetRandInt(10) - 5.0f), GetRandInt(5) / 5.0f + 0.2f, 3.62f);
         break;
       case KEY_KEY_3:
         //CreateMesh(btVector3(GetRandInt(10) - 5.0f, 7.0f, GetRandInt(10) - 5.0f), GetRandInt(5) / 5.0f + 0.2f, 1.0f);
         CreateMesh(btVector3(GetRandInt(10) - 5.0f, 7.0f, GetRandInt(10) - 5.0f), irrScene->getMesh("./missile.x"), 1.6f);
+        break;
+      case KEY_KEY_4:
+        SetupPins();
         break;
       case KEY_KEY_X:
         CreateStartScene();
