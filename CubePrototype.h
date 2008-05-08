@@ -1,5 +1,7 @@
+#ifndef CUBEPROTOTYPE_H
+#define CUBEPROTOTYPE_H
 #include "Prototype.h"
-#include "irrlicht.h"
+//#include "irrlicht.h"
 
 class CubePrototype : public Prototype
 {
@@ -10,3 +12,4 @@ class CubePrototype : public Prototype
       btCollisionShape* createShape() const;
       irr::scene::ISceneNode* createSceneNode(irr::scene::ISceneManager* smgr) const;
 };
+#endif

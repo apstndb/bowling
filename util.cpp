@@ -1,5 +1,14 @@
-#include <bullet/btBulletDynamicsCommon.h>
-#include <irrlicht/irrlicht.h>
+#include <cstdlib>
+#include <bullet/LinearMath/btQuaternion.h>
+#include "util.h"
+
+int GetRandInt(int TMax) { return std::rand() % TMax; }
+
+btVector3 getXZVector(btScalar deg, btScalar y)
+{
+  btScalar rad = btRadians(deg);
+  return btVector3(sin(rad), y, cos(rad));
+}
 
 // Converts a quaternion to an euler angle
 void QuaternionToEuler(const btQuaternion &TQuat, btVector3 &TEuler) {
@@ -15,5 +24,5 @@ void QuaternionToEuler(const btQuaternion &TQuat, btVector3 &TEuler) {
 	TEuler.setX(atan2f(2.0f * (Y * Z + X * W), -XSquared - YSquared + ZSquared + WSquared));
 	TEuler.setY(asinf(-2.0f * (X * Z - Y * W)));
 	TEuler.setZ(atan2f(2.0f * (X * Y + Z * W), XSquared - YSquared - ZSquared + WSquared));
-	TEuler *= irr::core::RADTODEG;
+	TEuler *= SIMD_DEGS_PER_RAD;//irr::core::RADTODEG;
 }

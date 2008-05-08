@@ -1,14 +1,18 @@
-#include "bullet/btBulletDynamicsCommon.h"
-#include "irrlicht.h"
+#include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
+#include <irrlicht.h>
 #include "MeshPrototype.h"
-#include <iostream>
-MeshPrototype::MeshPrototype(irr::scene::IAnimatedMesh* mesh)
+using irr::scene::IAnimatedMesh;
+using irr::scene::ISceneManager;
+using irr::scene::ISceneNode;
+using irr::core::vector3df;
+
+MeshPrototype::MeshPrototype(IAnimatedMesh* mesh)
   : mesh_(mesh)
 {}
-irr::scene::ISceneNode* MeshPrototype::createSceneNode(irr::scene::ISceneManager* smgr) const
+ISceneNode* MeshPrototype::createSceneNode(ISceneManager* smgr) const
 {
-  irr::scene::ISceneNode* Node = smgr->addAnimatedMeshSceneNode(mesh_);
-  Node->setScale(irr::core::vector3df(0.15, 0.15, 0.15));
+  ISceneNode* Node = smgr->addAnimatedMeshSceneNode(mesh_);
+  Node->setScale(vector3df(0.15, 0.15, 0.15));
   return Node;
 
 }

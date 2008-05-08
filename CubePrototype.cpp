@@ -1,12 +1,18 @@
-#include "bullet/btBulletDynamicsCommon.h"
-#include "irrlicht.h"
+#include <bullet/LinearMath/btVector3.h>
+#include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
+#include <irrlicht.h>
 #include "CubePrototype.h"
-CubePrototype::CubePrototype(const irr::core::vector3df &TScale)
+
+using irr::core::vector3df;
+using irr::scene::ISceneNode;
+using irr::scene::ISceneManager;
+
+CubePrototype::CubePrototype(const vector3df &TScale)
   : TScale_(TScale)
 {}
-irr::scene::ISceneNode* CubePrototype::createSceneNode(irr::scene::ISceneManager* smgr) const
+ISceneNode* CubePrototype::createSceneNode(ISceneManager* smgr) const
 {
-  irr::scene::ISceneNode* Node = smgr->addCubeSceneNode(1.0f);
+  ISceneNode* Node = smgr->addCubeSceneNode(1.0f);
   Node->setScale(TScale_);
   return Node;
 

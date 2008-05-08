@@ -1,12 +1,16 @@
-#include "bullet/btBulletDynamicsCommon.h"
-#include "irrlicht.h"
+#include <bullet/BulletCollision/CollisionShapes/btSphereShape.h>
+#include <irrlicht.h>
 #include "SpherePrototype.h"
+
+using irr::scene::ISceneNode;
+using irr::scene::ISceneManager;
+
 SpherePrototype::SpherePrototype(btScalar TRadius)
   : TRadius_(TRadius)
 {}
-irr::scene::ISceneNode* SpherePrototype::createSceneNode(irr::scene::ISceneManager* smgr) const
+ISceneNode* SpherePrototype::createSceneNode(ISceneManager* smgr) const
 {
-  irr::scene::ISceneNode* Node = smgr->addSphereSceneNode(TRadius_, 32);
+  ISceneNode* Node = smgr->addSphereSceneNode(TRadius_, 32);
   return Node;
 
 }

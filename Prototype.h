@@ -1,4 +1,5 @@
-#include <irrlicht.h>
+#ifndef PROTOTYPE_H
+#define PROTOTYPE_H
 class btCollisionShape;
 
 class Prototype {
@@ -6,3 +7,4 @@ class Prototype {
   virtual irr::scene::ISceneNode* createSceneNode(irr::scene::ISceneManager*) const = 0;
   virtual btCollisionShape* createShape() const = 0;
 };
+#endif

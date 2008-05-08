@@ -1,5 +1,5 @@
 #include "Prototype.h"
-#include "bullet/btBulletDynamicsCommon.h"
+//#include "bullet/btBulletDynamicsCommon.h"
 
 class SpherePrototype : public Prototype
 {
