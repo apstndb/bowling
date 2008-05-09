@@ -1,5 +1,5 @@
-#ifndef MESHPROTOTYPE_H
-#define MESHPROTOTYPE_H
+#ifndef MESH_PROTOTYPE_H
+#define MESH_PROTOTYPE_H
 #include "Prototype.h"
 namespace irr {
   namespace scene {

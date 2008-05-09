@@ -6,10 +6,10 @@
 
 using namespace irr;
 using namespace core;
-bool EventReceiverClass::OnEvent(const SEvent &TEvent) {
+bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
 
-  if(TEvent.EventType == EET_KEY_INPUT_EVENT && !TEvent.KeyInput.PressedDown) {
-    switch(TEvent.KeyInput.Key) {
+  if(tEvent.EventType == EET_KEY_INPUT_EVENT && !tEvent.KeyInput.PressedDown) {
+    switch(tEvent.KeyInput.Key) {
       case KEY_ESCAPE:
         game_->end();//dev_->closeDevice();
         break;

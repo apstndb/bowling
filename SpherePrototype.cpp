@@ -5,16 +5,16 @@
 using irr::scene::ISceneNode;
 using irr::scene::ISceneManager;
 
-SpherePrototype::SpherePrototype(btScalar TRadius)
-  : TRadius_(TRadius)
+SpherePrototype::SpherePrototype(btScalar tRadius)
+  : tRadius_(tRadius)
 {}
 ISceneNode* SpherePrototype::createSceneNode(ISceneManager* smgr) const
 {
-  ISceneNode* Node = smgr->addSphereSceneNode(TRadius_, 32);
-  return Node;
+  ISceneNode* node = smgr->addSphereSceneNode(tRadius_, 32);
+  return node;
 
 }
 btCollisionShape* SpherePrototype::createShape() const
 {
-	return new btSphereShape(TRadius_);
+	return new btSphereShape(tRadius_);
 }

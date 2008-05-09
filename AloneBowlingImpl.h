@@ -1,5 +1,5 @@
-#ifndef ALONEBOWLINGIMPL_H
-#define ALONEBOWLINGIMPL_H
+#ifndef ALONE_BOWLING_IMPL_H
+#define ALONE_BOWLING_IMPL_H
 
 namespace irr {
   typedef unsigned int u32;
@@ -39,22 +39,22 @@ class AloneBowling;
 
 class AloneBowlingImpl {
   public:
-    bool running;
+    bool running_;
     AloneBowling* parent_;
-    EventReceiverClass* Receiver;
-    irr::IrrlichtDevice *irrDevice;
-    irr::video::IVideoDriver *irrDriver;
-    irr::scene::ISceneManager *irrScene;
-    irr::gui::IGUIEnvironment *irrGUI;
-    irr::ITimer *irrTimer;
-    irr::io::IFileSystem *irrFile;
-    irr::ILogger *irrLog;
-    irr::core::list<btRigidBody*>* Objects;
-    btDefaultCollisionConfiguration *CollisionConfiguration;
-    btBroadphaseInterface *BroadPhase;
-    btCollisionDispatcher *Dispatcher;
-    btSequentialImpulseConstraintSolver *Solver;
-    btDiscreteDynamicsWorld *World;
+    EventReceiverClass* receiver_;
+    irr::IrrlichtDevice *irrDevice_;
+    irr::video::IVideoDriver *irrDriver_;
+    irr::scene::ISceneManager *irrScene_;
+    irr::gui::IGUIEnvironment *irrGUI_;
+    irr::ITimer *irrTimer_;
+    irr::io::IFileSystem *irrFile_;
+    irr::ILogger *irrLog_;
+    irr::core::list<btRigidBody*>* objects_;
+    btDefaultCollisionConfiguration *collisionConfiguration_;
+    btBroadphaseInterface *broadPhase_;
+    btCollisionDispatcher *dispatcher_;
+    btSequentialImpulseConstraintSolver *solver_;
+    btDiscreteDynamicsWorld *world_;
     void ClearObjects();
     void UpdatePhysics(irr::u32 TDeltaTime);
     void CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass);

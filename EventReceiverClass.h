@@ -1,5 +1,5 @@
-#ifndef EVENTRECEIVERCLASS_H
-#define EVENTRECEIVERCLASS_H
+#ifndef EVENT_RECEIVER_CLASS_H
+#define EVENT_RECEIVER_CLASS_H
 #include <irrlicht.h>
 // Event receiver
 class AloneBowling;

@@ -12,9 +12,9 @@ typedef float btScalar;
 class SpherePrototype : public Prototype
 {
   private:
-      btScalar TRadius_;
+      btScalar tRadius_;
   public:
-      SpherePrototype(btScalar TRadius);
+      SpherePrototype(btScalar tRadius);
       btCollisionShape* createShape() const;
       irr::scene::ISceneNode* createSceneNode(irr::scene::ISceneManager* smgr) const;
 };

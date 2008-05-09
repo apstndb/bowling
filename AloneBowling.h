@@ -1,5 +1,5 @@
-#ifndef ALONEBOWLING
-#define ALONEBOWLING
+#ifndef ALONE_BOWLING_H
+#define ALONE_BOWLING_H
 class AloneBowlingImpl;
 namespace irr {
   namespace scene {

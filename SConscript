@@ -2,8 +2,8 @@ env = Environment( CPPDEFINES=Split('_UNICODE'), CPPPATH=Split('/usr/include/bul
 Import( 'tools' )
 Tool( tools )(env)
 commonlibs = Split( 'Irrlicht png jpeg Xxf86vm GL bulletdynamics bulletcollision bulletmath' )
-#ccflags = Split( '-Wall' )
-ccflags = Split( '-Wall -g' )
+#ccflags = Split( '-Wall -g' )
+ccflags = Split( '-Wall -Os' )
 include = {}
 include['crossmingw'] = Split( '')
 include['gcc'] = Split( '' )

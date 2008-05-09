@@ -28,44 +28,43 @@ AloneBowling::AloneBowling()
 void AloneBowling::run() {
   // Initialize irrlicht
 
-  pimpl_->irrDevice->getCursorControl()->setVisible(0);
+  pimpl_->irrDevice_->getCursorControl()->setVisible(0);
 
   // Initialize bullet
 
   // Add camera
   //ICameraSceneNode *Camera = irrScene->addCameraSceneNode();
-  ICameraSceneNode *Camera = pimpl_->irrScene->addCameraSceneNodeFPS(0, 10.0f, 1.0f);
-  Camera->setPosition(vector3df(0, 1.7f, 0));
-  Camera->setTarget(vector3df(0, 0, 18.288));
+  ICameraSceneNode *camera = pimpl_->irrScene_->addCameraSceneNodeFPS(0, 10.0f, 1.0f);
+  camera->setPosition(vector3df(0, 1.7f, 0));
+  camera->setTarget(vector3df(0, 0, 18.288));
 
   // Preload textures
   //irrDriver->getTexture("ice0.jpg");
-  pimpl_->irrDriver->getTexture("rust0.jpg");
+  pimpl_->irrDriver_->getTexture("rust0.jpg");
 
 
   // Create text
-  IGUISkin *Skin = pimpl_->irrGUI->getSkin();
-  Skin->setColor(EGDC_BUTTON_TEXT, SColor(255, 255, 255, 255));
-  pimpl_->irrGUI->addStaticText(L"Hit 1 to create a box\nHit 2 to create a sphere\nHit x to reset", rect<s32>(0, 0, 200, 100), false);
+  IGUISkin *skin = pimpl_->irrGUI_->getSkin();
+  skin->setColor(EGDC_BUTTON_TEXT, SColor(255, 255, 255, 255));
+  pimpl_->irrGUI_->addStaticText(L"Hit 1 to create a box\nHit 2 to create a sphere\nHit x to reset", rect<s32>(0, 0, 200, 100), false);
 
   // Create the initial scene
-  pimpl_->irrScene->addLightSceneNode(0, core::vector3df(2, 5, -2), SColorf(4, 4, 4, 1));
+  pimpl_->irrScene_->addLightSceneNode(0, core::vector3df(2, 5, -2), SColorf(4, 4, 4, 1));
   CreateStartScene();
 
   // Main loop
-  u32 TimeStamp = pimpl_->irrTimer->getTime(), DeltaTime = 0;
-  while(pimpl_->irrDevice->run() && pimpl_->running) {
+  u32 timeStamp = pimpl_->irrTimer_->getTime(), deltaTime = 0;
+  while(pimpl_->irrDevice_->run() && pimpl_->running_) {
 
-    DeltaTime = pimpl_->irrTimer->getTime() - TimeStamp;
-    TimeStamp = pimpl_->irrTimer->getTime();
+    deltaTime = pimpl_->irrTimer_->getTime() - timeStamp;
+    timeStamp = pimpl_->irrTimer_->getTime();
 
-    pimpl_->UpdatePhysics(DeltaTime);
+    pimpl_->UpdatePhysics(deltaTime);
 
-    pimpl_->irrDriver->beginScene(true, true, SColor(255, 20, 0, 0));
-    pimpl_->irrScene->drawAll();
-    pimpl_->irrGUI->drawAll();
-    pimpl_->irrDriver->endScene();
-    //irrDevice->run();
+    pimpl_->irrDriver_->beginScene(true, true, SColor(255, 20, 0, 0));
+    pimpl_->irrScene_->drawAll();
+    pimpl_->irrGUI_->drawAll();
+    pimpl_->irrDriver_->endScene();
   }
 }
 
@@ -98,20 +97,20 @@ void AloneBowling::CreateStartScene() {
 void AloneBowling::SetupPins()
 {
   btVector3 vectors[10];
-  for(size_t i = 0; i != 3; ++i) {
+  for(std::size_t i = 0; i != 3; ++i) {
     vectors[i] = 0.4 * getXZVector(i*360/3+180, 0.200f);
   }
-  for(size_t i = 0; i != 6; ++i) {
+  for(std::size_t i = 0; i != 6; ++i) {
     vectors[i+3] = 0.4/sqrt(3) * getXZVector(i*360/6+30, 0.200f);
   }
   vectors[9] = btVector3(0, 0, 0);
 
   std::for_each(vectors, vectors+10, bind(&btVector3::operator+=, _1, btVector3(0, 0, 18.288-0.4)));
-  std::for_each(vectors, vectors+10, bind(&AloneBowling::CreateMesh, this, _1, pimpl_->irrScene->getMesh("./missile.x"), 1.6f));
+  std::for_each(vectors, vectors+10, bind(&AloneBowling::CreateMesh, this, _1, pimpl_->irrScene_->getMesh("./missile.x"), 1.6f));
 }
 
 void AloneBowling::end()
 {
-  pimpl_->running = false;
+  pimpl_->running_ = false;
 }
 

@@ -11,18 +11,18 @@ btVector3 getXZVector(btScalar deg, btScalar y)
 }
 
 // Converts a quaternion to an euler angle
-void QuaternionToEuler(const btQuaternion &TQuat, btVector3 &TEuler) {
-	btScalar W = TQuat.getW();
-	btScalar X = TQuat.getX();
-	btScalar Y = TQuat.getY();
-	btScalar Z = TQuat.getZ();
-	float WSquared = W * W;
-	float XSquared = X * X;
-	float YSquared = Y * Y;
-	float ZSquared = Z * Z;
+void QuaternionToEuler(const btQuaternion &tQuat, btVector3 &tEuler) {
+	btScalar w = tQuat.getW();
+	btScalar x = tQuat.getX();
+	btScalar y = tQuat.getY();
+	btScalar z = tQuat.getZ();
+	float wSquared = w * w;
+	float xSquared = x * x;
+	float ySquared = y * y;
+	float zSquared = z * z;
 
-	TEuler.setX(atan2f(2.0f * (Y * Z + X * W), -XSquared - YSquared + ZSquared + WSquared));
-	TEuler.setY(asinf(-2.0f * (X * Z - Y * W)));
-	TEuler.setZ(atan2f(2.0f * (X * Y + Z * W), XSquared - YSquared - ZSquared + WSquared));
-	TEuler *= SIMD_DEGS_PER_RAD;//irr::core::RADTODEG;
+	tEuler.setX(atan2f(2.0f * (y * z + x * w), -xSquared - ySquared + zSquared + wSquared));
+	tEuler.setY(asinf(-2.0f * (x * z - y * w)));
+	tEuler.setZ(atan2f(2.0f * (x * y + z * w), xSquared - ySquared - zSquared + wSquared));
+	tEuler *= SIMD_DEGS_PER_RAD;//irr::core::RADTODEG;
 }

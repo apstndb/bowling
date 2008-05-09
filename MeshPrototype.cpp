@@ -11,9 +11,9 @@ MeshPrototype::MeshPrototype(IAnimatedMesh* mesh)
 {}
 ISceneNode* MeshPrototype::createSceneNode(ISceneManager* smgr) const
 {
-  ISceneNode* Node = smgr->addAnimatedMeshSceneNode(mesh_);
-  Node->setScale(vector3df(0.15, 0.15, 0.15));
-  return Node;
+  ISceneNode* node = smgr->addAnimatedMeshSceneNode(mesh_);
+  node->setScale(vector3df(0.15, 0.15, 0.15));
+  return node;
 
 }
 btCollisionShape* MeshPrototype::createShape() const

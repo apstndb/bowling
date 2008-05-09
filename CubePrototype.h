@@ -1,5 +1,5 @@
-#ifndef CUBEPROTOTYPE_H
-#define CUBEPROTOTYPE_H
+#ifndef CUBE_PROTOTYPE_H
+#define CUBE_PROTOTYPE_H
 #include "Prototype.h"
 
 namespace irr {
@@ -15,9 +15,9 @@ namespace irr {
 class CubePrototype : public Prototype
 {
   private:
-      irr::core::vector3df* TScale_;
+      irr::core::vector3df* tScale_;
   public:
-      CubePrototype(const irr::core::vector3df& TScale);
+      CubePrototype(const irr::core::vector3df& tScale);
       ~CubePrototype();
       btCollisionShape* createShape() const;
       irr::scene::ISceneNode* createSceneNode(irr::scene::ISceneManager* smgr) const;
