@@ -1,5 +1,11 @@
 #ifndef PROTOTYPE_H
 #define PROTOTYPE_H
+namespace irr {
+  namespace scene {
+    class ISceneNode;
+    class ISceneManager;
+  }
+}
 class btCollisionShape;
 
 class Prototype {

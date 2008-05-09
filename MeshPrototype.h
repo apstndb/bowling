@@ -1,7 +1,14 @@
 #ifndef MESHPROTOTYPE_H
 #define MESHPROTOTYPE_H
 #include "Prototype.h"
-//#include "bullet/btBulletDynamicsCommon.h"
+namespace irr {
+  namespace scene {
+    class IAnimatedMesh;
+    class ISceneManager;
+  }
+}
+class btCollisionShape;
+
 class MeshPrototype : public Prototype
 {
   private:

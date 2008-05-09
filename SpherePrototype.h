@@ -1,6 +1,14 @@
+#ifndef SPHERE_PROTOTYPE_H
+#define SPHERE_PROTOTYPE_H
 #include "Prototype.h"
-//#include "bullet/btBulletDynamicsCommon.h"
 
+namespace irr {
+  namespace scene {
+    class ISceneNode;
+    class ISceneManager;
+  }
+}
+typedef float btScalar;
 class SpherePrototype : public Prototype
 {
   private:
@@ -10,3 +18,4 @@ class SpherePrototype : public Prototype
       btCollisionShape* createShape() const;
       irr::scene::ISceneNode* createSceneNode(irr::scene::ISceneManager* smgr) const;
 };
+#endif

@@ -1,6 +1,6 @@
+#include "MeshPrototype.h"
 #include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
 #include <irrlicht.h>
-#include "MeshPrototype.h"
 using irr::scene::IAnimatedMesh;
 using irr::scene::ISceneManager;
 using irr::scene::ISceneNode;
