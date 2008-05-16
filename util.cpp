@@ -4,10 +4,10 @@
 
 int GetRandInt(int TMax) { return std::rand() % TMax; }
 
-btVector3 getXZVector(btScalar deg, btScalar y)
+btVector3 getXZVector(btScalar deg)
 {
   btScalar rad = btRadians(deg);
-  return btVector3(sin(rad), y, cos(rad));
+  return btVector3(sin(rad), 0.0f, cos(rad));
 }
 
 // Converts a quaternion to an euler angle

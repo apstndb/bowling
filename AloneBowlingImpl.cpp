@@ -2,17 +2,20 @@
 #include "EventReceiverClass.h"
 #include "UpdateRender.h"
 #include "Prototype.h"
+#include "constant.h"
 #include <btBulletDynamicsCommon.h>
 #include <irrlicht.h>
+#include <boost/array.hpp>
 using namespace irr;
 using namespace core;
 using namespace scene;
 using namespace video;
 AloneBowlingImpl::AloneBowlingImpl(AloneBowling* parent)
-  :running_(true),
+  :ball_(0),
+  running_(true),
   parent_(parent),
   receiver_(new EventReceiverClass(parent, irrDevice_)),
-  irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(800, 600), 32, false, false, false, receiver_)),
+  irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(ResX, ResY), 32, false, false, false, receiver_)),
   irrDriver_(irrDevice_->getVideoDriver()),
   irrScene_(irrDevice_->getSceneManager()),
   irrGUI_(irrDevice_->getGUIEnvironment()),
@@ -22,15 +25,18 @@ AloneBowlingImpl::AloneBowlingImpl(AloneBowling* parent)
   broadPhase_(new btAxisSweep3(btVector3(-1000, -1000, -1000), btVector3(1000, 1000, 1000))),
   dispatcher_(new btCollisionDispatcher(collisionConfiguration_)),
   solver_(new btSequentialImpulseConstraintSolver()),
-  world_(new btDiscreteDynamicsWorld(dispatcher_, broadPhase_, solver_, collisionConfiguration_))
+  world_(new btDiscreteDynamicsWorld(dispatcher_, broadPhase_, solver_, collisionConfiguration_)),
+  pins_(new boost::array<btRigidBody*, 10>)
 {
+  pins_->assign(0);
+  world_->setGravity(btVector3(0,-Gravity,0));
 }
 
 // Runs the physics simulation.
 // - TDeltaTime tells the simulation how much time has passed since the last frame so the simulation can run independently of the frame rate.
 void AloneBowlingImpl::UpdatePhysics(u32 TDeltaTime) {
 
-	world_->stepSimulation(TDeltaTime * 0.001f, 60);
+	world_->stepSimulation(TDeltaTime * 0.001f, 120);
 
 	// Relay the object's orientation to irrlicht
 	for(core::list<btRigidBody *>::Iterator iterator = objects_->begin(); iterator != objects_->end(); ++iterator) {
@@ -60,12 +66,11 @@ void AloneBowlingImpl::ClearObjects() {
 	objects_->clear();
 }
 // Create a shape rigid body
-void AloneBowlingImpl::CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass) {
+btRigidBody* AloneBowlingImpl::CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass) {
 	
 	ISceneNode *node = prototype.createSceneNode(irrScene_);
 	node->setMaterialFlag(EMF_LIGHTING, 1);
 	node->setMaterialFlag(EMF_NORMALIZE_NORMALS, true);
-	node->setMaterialTexture(0, irrDriver_->getTexture("rust0.jpg"));
 
 	// Set the initial position of the object
 	btTransform transform;
@@ -81,8 +86,10 @@ void AloneBowlingImpl::CreateShape(const Prototype &prototype, const btVector3 &
 	btVector3 localInertia;
 	shape->calculateLocalInertia(TMass, localInertia);
 
+  btRigidBody::btRigidBodyConstructionInfo info(TMass, motionState, shape, localInertia);
+  //info.m_friction = 1.0f;
 	// Create the rigid body object
-	btRigidBody *rigidBody = new btRigidBody(TMass, motionState, shape, localInertia);
+	btRigidBody *rigidBody = new btRigidBody(info);
 
 	// Store a pointer to the irrlicht node so we can update it later
 	rigidBody->setUserPointer((void *)(node));
@@ -90,10 +97,12 @@ void AloneBowlingImpl::CreateShape(const Prototype &prototype, const btVector3 &
 	// Add it to the world
 	world_->addRigidBody(rigidBody);
 	objects_->push_back(rigidBody);
+  return rigidBody;
 }
 AloneBowlingImpl::~AloneBowlingImpl()
 {
   ClearObjects();
+  delete pins_;
   delete world_;
   delete solver_;
   delete dispatcher_;

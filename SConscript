@@ -19,3 +19,4 @@ ldflags = {}
 ldflags['crossmingw'] = Split( '-Wl,--subsystem,windows' )
 ldflags['gcc'] = Split( '' )
 env . Program( 'bowling', src[tools], CCFLAGS=ccflags, LIBS=lib[tools], LINKFLAGS=ldflags[tools], INCLUDE=include[tools])
+env . Program( 'bowlingCalc', Split('bowlingCalc.cpp util.o'), CCFLAGS=ccflags, LINKFLAGS=ldflags[tools], INCLUDE=include[tools])

@@ -1,6 +1,13 @@
 #ifndef ALONE_BOWLING_IMPL_H
 #define ALONE_BOWLING_IMPL_H
 
+namespace std {
+  typedef unsigned int size_t;
+}
+
+namespace boost {
+  template<class T, std::size_t N> class array;
+}
 namespace irr {
   typedef unsigned int u32;
   class IrrlichtDevice;
@@ -39,6 +46,7 @@ class AloneBowling;
 
 class AloneBowlingImpl {
   public:
+    btRigidBody* ball_;
     bool running_;
     AloneBowling* parent_;
     EventReceiverClass* receiver_;
@@ -55,9 +63,10 @@ class AloneBowlingImpl {
     btCollisionDispatcher *dispatcher_;
     btSequentialImpulseConstraintSolver *solver_;
     btDiscreteDynamicsWorld *world_;
+    boost::array<btRigidBody*, 10>* pins_;
     void ClearObjects();
     void UpdatePhysics(irr::u32 TDeltaTime);
-    void CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass);
+    btRigidBody*  CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass);
     AloneBowlingImpl(AloneBowling*);
     ~AloneBowlingImpl();
 };
