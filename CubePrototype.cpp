@@ -7,8 +7,8 @@ using irr::core::vector3df;
 using irr::scene::ISceneNode;
 using irr::scene::ISceneManager;
 
-CubePrototype::CubePrototype(const vector3df &tScale)
-  : tScale_(new vector3df(tScale))
+  CubePrototype::CubePrototype(const vector3df &tScale)
+: tScale_(new vector3df(tScale))
 {}
 ISceneNode* CubePrototype::createSceneNode(ISceneManager* smgr) const
 {

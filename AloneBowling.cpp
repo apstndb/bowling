@@ -5,6 +5,7 @@
 #include "AloneBowlingImpl.h"
 #include "util.h"
 #include "constant.h"
+#include "bowlingScore.h"
 #include <iostream>
 #include <algorithm>
 #include <boost/bind.hpp>
@@ -22,50 +23,52 @@ using namespace video;
 using namespace io;
 using namespace gui;
 
-AloneBowling::AloneBowling()
-  :pimpl_(new AloneBowlingImpl(this))
+  AloneBowling::AloneBowling()
+:pimpl_(new AloneBowlingImpl(this))
 {
 }
-void AloneBowling::run() {
+
+void AloneBowling::run()
+{
   // Initialize irrlicht
 
   //pimpl_->irrDevice_->getCursorControl()->setVisible(0);
+  pimpl_->irrDevice_->getFileSystem()->addZipFileArchive("files.zip");
 
   // Initialize bullet
 
   // Add camera
   //ICameraSceneNode *Camera = irrScene->addCameraSceneNode();
-  ICameraSceneNode *camera[2] = {0,0};
+  ICameraSceneNode *camera[3] = {0,0};
 
-  camera[0] = pimpl_->irrScene_->addCameraSceneNode(0, vector3df(0, Factor*0.5f, 0), vector3df(0, 0, DistanceToHeadPin));
+  camera[0] = pimpl_->irrScene_->addCameraSceneNode(0, vector3df(0, Factor*0.5f, Factor*-0), vector3df(0, 0, DistanceToHeadPin));
   camera[0]->setFOV(PI/6.0f);
+  camera[0]->setIsOrthogonal(true);
 
-  camera[1] = pimpl_->irrScene_->addCameraSceneNode(0, vector3df(0, Factor*1, DistanceToHeadPin-PinsTriangleRadius), vector3df(0,0,DistanceToHeadPin+PinsTriangleRadius));
-//  camera[1]->setPosition(vector3df(0, 2, DistanceToHeadPin));
-//  camera[1]->setTarget(vector3df(0, 0, DistanceToHeadPin));
+  camera[1] = pimpl_->irrScene_->addCameraSceneNode(0,
+      vector3df(0, Factor*3, DistanceToHeadPin+PinsTriangleRadius),
+      vector3df(0,0,DistanceToHeadPin+PinsTriangleRadius));
   camera[1]->setUpVector(vector3df(0,0,1));
+
+  camera[2] = pimpl_->irrScene_->addCameraSceneNode(0,
+      vector3df(0, Factor*.6f, DistanceToHeadPin-PinsTriangleRadius/2),
+      vector3df(0,0,DistanceToHeadPin+PinsTriangleRadius));
+  camera[2]->setUpVector(vector3df(0,0,1));
 
   // Preload textures
   //irrDriver->getTexture("ice0.jpg");
-  pimpl_->irrDriver_->getTexture("rust0.jpg");
-
-  //IAnimatedMesh* arrowMesh = pimpl_->irrScene_->addArrowMesh("hoge");
-  //IAnimatedMeshSceneNode* arrow = pimpl_->irrScene_->addAnimatedMeshSceneNode(arrowMesh);
-  //ISceneNodeAnimator* anim = pimpl_->irrScene_->createFlyStraightAnimator(vector3df(LaneWidth*1.5,Factor*1,DistanceToHeadPin+PinsTriangleRadius), vector3df(-LaneWidth*1.5,Factor*1,DistanceToHeadPin+PinsTriangleRadius),10000, false);
-  //arrow->addAnimator(anim);
-  //arrow->setScale(vector3df(5.0,5.0,5.0));
-  //arrow->setRotation(vector3df(180,0,0));
-	//arrow->setMaterialFlag(EMF_LIGHTING, false);
-
+  pimpl_->arrowMesh_ = pimpl_->irrScene_->addArrowMesh("hoge");
 
   // Create text
   IGUISkin *skin = pimpl_->irrGUI_->getSkin();
   skin->setColor(EGDC_BUTTON_TEXT, SColor(255, 255, 255, 255));
-  pimpl_->irrGUI_->addStaticText(L"Hit 1 to create a box\nHit 2 to create a sphere\nHit x to reset", rect<s32>(0, 0, 200, 100), false);
+  //pimpl_->irrGUI_->addStaticText(L"Hit 1 to create a box\nHit 2 to create a sphere\nHit x to reset", rect<s32>(0, 0, 200, 100), false);
 
   // Create the initial scene
   pimpl_->irrScene_->addLightSceneNode(0, core::vector3df(20, 50, -5), SColorf(4, 4, 4, 1));
   CreateStartScene();
+  pimpl_->setupArrow();
+  setState(GAME_WAIT);
 
   //pimpl_->irrGUI_->getSkin()->setColor;
 
@@ -75,13 +78,9 @@ void AloneBowling::run() {
     col.setAlpha(255);
     pimpl_->irrGUI_->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
   }
-  /*IGUIWindow* window(pimpl_->irrGUI_->addWindow(rect<s32>(ResX/2, ResY/2, ResX, ResY)));
-  cout << window->getRelativePosition() << endl;
-  cout << window->getAbsolutePosition() << endl;
-  cout << window->getAbsoluteClippingRect() << endl;*/
   // Main loop
   u32 timeStamp = pimpl_->irrTimer_->getTime(), deltaTime = 0;
-  while(pimpl_->irrDevice_->run() && pimpl_->running_) {
+  while(pimpl_->irrDevice_->run() && getState() != GAME_END) {
 
     deltaTime = pimpl_->irrTimer_->getTime() - timeStamp;
     timeStamp = pimpl_->irrTimer_->getTime();
@@ -94,24 +93,23 @@ void AloneBowling::run() {
     pimpl_->irrGUI_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[1]);
-    pimpl_->irrDriver_->setViewPort(rect<s32>(ResX/2,0,ResX,ResY/2));
-    //pimpl_->irrDriver_->setViewPort(window->getRelativePosition());
-    //pimpl_->irrDriver_->beginScene(true, true, SColor(255, 0, 0, 0));
+    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0,ResX,ResY/3));
+    pimpl_->irrScene_->drawAll();
+
+    pimpl_->irrScene_->setActiveCamera(camera[2]);
+    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX/3,ResY/3));
     pimpl_->irrScene_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[0]);
 
     pimpl_->irrDriver_->endScene();
 
-    //btVector3 lin_vel = pimpl_->ball_->getLinearVelocity();
-    //std::wstring tmp = boost::str(boost::wformat(L"%1%") % countKnockedPins());
-    //pimpl_->irrDevice_->setWindowCaption(tmp.c_str());
   }
+  cout << pimpl_->score_->calcTotalScore() << endl;
 }
 
 AloneBowling::~AloneBowling()
 {
-  delete pimpl_;
 }
 
 // Create a box rigid body
@@ -125,23 +123,26 @@ btRigidBody* AloneBowling::CreateMesh(const btVector3 &TPosition, IAnimatedMesh*
 {
   return pimpl_->CreateShape(MeshPrototype(mesh), TPosition, TMass);
 }
+
 // Create a sphere rigid body
 btRigidBody* AloneBowling::CreateBall(btScalar TMass) 
 {
   return pimpl_->ball_ = pimpl_->CreateShape(SpherePrototype(BallRadius), btVector3(0,BallRadius,0), TMass);
 }
+
 void AloneBowling::BallSetVelocity(const btVector3 &lin_vel, const btVector3 &ang_vel)
 {
   CreateBall(BallMass);
-  std::cout << pimpl_->ball_ << std::endl;
   pimpl_->ball_->setLinearVelocity(lin_vel);
   pimpl_->ball_->setAngularVelocity(ang_vel);
 }
+
 btRigidBody* AloneBowling::CreateSphere(const btVector3 &TPosition, btScalar TRadius, btScalar TMass) 
 {
 
   return pimpl_->CreateShape(SpherePrototype(TRadius), TPosition, TMass);
 }
+
 unsigned int AloneBowling::countKnockedPins()
 {
   boost::array<btRigidBody*, 10>& pins = *pimpl_->pins_;
@@ -149,37 +150,91 @@ unsigned int AloneBowling::countKnockedPins()
   boost::array<btRigidBody*, 10>::iterator end(pins.end());
   for(boost::array<btRigidBody*, 10>::iterator i = pins.begin();
       i != end; ++i) {
-    if((*i)->getCenterOfMassPosition().y() < PinsHeight/2-0.1) ++result;
+    if(*i && (*i)->getCenterOfMassPosition().y() < PinsHeight/2-0.1) {
+      pimpl_->vanishObject(*i);
+      *i = 0;
+      ++result;
+    }
   }
   return result;
 }
+
+void AloneBowling::misc()
+{
+  unsigned int temp = pimpl_->score_->getCurrentFrame();
+  unsigned int knockedPins = countKnockedPins();
+  if(pimpl_->score_->put(knockedPins)) {
+    setState(GAME_END);
+  }
+  else {
+    if(temp != pimpl_->score_->getCurrentFrame() || (temp == 10 && !pimpl_->score_->anyPinIsStanding())) {
+      resetScene();
+    }
+    else {
+      //cleanKnockedPins();
+      pimpl_->setupArrow();
+      setState(GAME_WAIT);
+    }
+  }
+  cout << knockedPins << endl;
+
+}
 void AloneBowling::CreateStartScene()
 {
-
-	pimpl_->ClearObjects();
-	CreateBox(btVector3(0.0f, -LaneThick/2, LaneLength/2-LaneMargin), vector3df(LaneWidth, LaneThick, LaneLength), 0.0f);
+  pimpl_->ClearObjects();
+  CreateBox(btVector3(0.0f, -LaneThick/2, LaneLength/2-LaneMargin), vector3df(LaneWidth, LaneThick, LaneLength), 0.0f);
   SetupPins();
-  //CreateBall(BallMass);
+}
+
+void AloneBowling::cleanKnockedPins()
+{
+
+}
+void AloneBowling::resetScene()
+{
+  CreateStartScene();
+  pimpl_->setupArrow();
+  setState(GAME_WAIT);
 }
 void AloneBowling::SetupPins()
 {
   btVector3 vectors[10];
   for(std::size_t i = 0; i != 3; ++i) {
-    vectors[i] = PinsTriangleRadius * getXZVector(i*360/3+180);
+    vectors[i] = PinsTriangleRadius * getXZVector(btRadians(i*360/3+180));
   }
   for(std::size_t i = 0; i != 6; ++i) {
-    vectors[i+3] = PinsTriangleRadius/sqrt(3) * getXZVector(i*360/6+30);
+    vectors[i+3] = PinsTriangleRadius/sqrt(3) * getXZVector(btRadians(i*360/6+30));
   }
   vectors[9] = btVector3(0, 0, 0);
 
   for(std::size_t i = 0; i != 10; ++i) {
     vectors[i] += btVector3(0, PinsHeight/2, DistanceToHeadPin+PinsTriangleRadius);
-    pimpl_->pins_->at(i) = CreateMesh(vectors[i], pimpl_->irrScene_->getMesh("./pin.x"), PinsMass);
+    pimpl_->pins_->at(i) = CreateMesh(vectors[i], pimpl_->irrScene_->getMesh("pin.x"), PinsMass);
   }
 }
 
-void AloneBowling::end()
+void AloneBowling::setState(GameState state)
 {
-  pimpl_->running_ = false;
+  pimpl_->state_ = state;
 }
 
+GameState AloneBowling::getState()
+{
+  return pimpl_->state_;
+}
+
+float AloneBowling::getArrowRad()
+{
+  if(!pimpl_->arrow_) throw 1;
+  vector3df pos = pimpl_->arrow_->getPosition();
+  return atan2f(pos.X, pos.Z);
+}
+
+void AloneBowling::stopArrow()
+{
+  pimpl_->arrow_->removeAnimators();
+  irr::scene::ISceneNodeAnimator* anim = pimpl_->irrScene_->createDeleteAnimator(1000);
+  pimpl_->arrow_->addAnimator(anim);
+  anim->drop();
+  pimpl_->arrow_ = 0;
+}

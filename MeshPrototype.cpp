@@ -7,8 +7,8 @@ using irr::scene::ISceneManager;
 using irr::scene::ISceneNode;
 using irr::core::vector3df;
 
-MeshPrototype::MeshPrototype(IAnimatedMesh* mesh)
-  : mesh_(mesh)
+  MeshPrototype::MeshPrototype(IAnimatedMesh* mesh)
+: mesh_(mesh)
 {}
 ISceneNode* MeshPrototype::createSceneNode(ISceneManager* smgr) const
 {
@@ -19,5 +19,5 @@ ISceneNode* MeshPrototype::createSceneNode(ISceneManager* smgr) const
 }
 btCollisionShape* MeshPrototype::createShape() const
 {
-	return new btCylinderShape(btVector3(PinsRadius, PinsHeight/2, PinsRadius));
+  return new btCylinderShape(btVector3(PinsRadius, PinsHeight/2, PinsRadius));
 }
