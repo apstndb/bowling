@@ -48,7 +48,6 @@ namespace bowling
     virtual void print(std::ostream& os) const;
     virtual bool anyPinIsStanding() const;
     virtual char letterBall2(unsigned int ball1, unsigned int ball2) const;
-    char letterBall2Impl(unsigned int ball1, unsigned int ball2) const;
     char letterBall3(unsigned int ball1, unsigned int ball2,
         unsigned int ball3) const;
   };

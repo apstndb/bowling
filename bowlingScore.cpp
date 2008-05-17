@@ -32,6 +32,9 @@ namespace bowling
   char TenthFrame::letterBall2(unsigned int ball1, unsigned int ball2) const
   {
     if(throwed_ < 2) return ' ';
+    else if(isStrike(ball1)) {
+      return letterBall1(ball2);
+    }
     else return letterBall2Impl(ball1, ball2);
   }
   char Frame::letterBall2Impl(unsigned int ball1, unsigned int ball2) const
@@ -41,19 +44,12 @@ namespace bowling
     else if(ball2 == 0) return 'G';
     else return '0'+ball2;
   }
-  char TenthFrame::letterBall2Impl(unsigned int ball1, unsigned int ball2) const
-  {
-    if(isStrike(ball1)) {
-      return letterBall1(ball2);
-    }
-    else return (this->*&Frame::letterBall2Impl)(ball1, ball2);
-  }
   char TenthFrame::letterBall3(unsigned int ball1, unsigned int ball2, unsigned int ball3) const
   {
     if(throwed_ != 3) return ' ';
     else if(isStrike(ball1)) {
       if(isStrike(ball2)) return letterBall1(ball3);
-      else return (this->*&Frame::letterBall2Impl)(ball2, ball3);
+      else return letterBall2Impl(ball2, ball3);
 }
     else {
       if(isSpare(ball1,ball2)) return letterBall1(ball3);
@@ -259,7 +255,7 @@ namespace bowling
   }
   bool Game::anyPinIsStanding() const
   {
-    return frames_[currentFrame_-1]->anyPinIsStanding();
+    return frames_[currentFrame_]->anyPinIsStanding();
   }
   std::ostream& operator<<(std::ostream& os, const Game& rhs)
   {
