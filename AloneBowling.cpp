@@ -105,7 +105,7 @@ void AloneBowling::run()
     pimpl_->irrDriver_->endScene();
 
   }
-  cout << pimpl_->score_->calcTotalScore() << endl;
+  cout << *pimpl_->score_ << endl;
 }
 
 AloneBowling::~AloneBowling()
@@ -177,7 +177,6 @@ void AloneBowling::misc()
     }
   }
   cout << knockedPins << endl;
-
 }
 void AloneBowling::CreateStartScene()
 {

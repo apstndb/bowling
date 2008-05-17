@@ -11,11 +11,13 @@ lib = {}
 lib['crossmingw'] = commonlibs + Split( '')
 lib['gcc'] = commonlibs + Split( '' )
 #commonsrc = Split( 'util.cpp main.cpp CubePrototype.cpp UpdatePhysics.cpp ClearObjects.cpp MeshPrototype.cpp CreateMesh.cpp CreateShape.cpp SpherePrototype.cpp CreateStartScene.cpp CreateSphere.cpp EventReceiverClass.cpp GetRandInt.cpp QuaternionToEuler.cpp UpdateRender.cpp' )
-commonsrc = Split( 'bowlingScore.cpp AloneBowlingImpl.cpp AloneBowling.cpp EventReceiverClass.cpp UpdateRender.cpp util.cpp main.cpp SpherePrototype.cpp MeshPrototype.cpp CubePrototype.cpp RoundTripAnimator.cpp' )
+commonsrc = Split( 'bowlingScore.o AloneBowlingImpl.cpp AloneBowling.cpp EventReceiverClass.cpp UpdateRender.cpp util.cpp main.cpp SpherePrototype.cpp MeshPrototype.cpp CubePrototype.cpp RoundTripAnimator.cpp' )
 src = {}
 src['crossmingw'] = commonsrc + Split('')
 src['gcc'] = commonsrc + Split('')
 ldflags = {}
 ldflags['crossmingw'] = Split( '-Wl,--subsystem,windows' )
 ldflags['gcc'] = Split( '' )
+env . Object( 'bowlingScore.cpp', CCFLAGS=ccflags, INCLUDE=include[tools])
 env . Program( 'bowling', src[tools], CCFLAGS=ccflags, LIBS=lib[tools], LINKFLAGS=ldflags[tools], INCLUDE=include[tools])
+env . Program( 'bowlingScore', Split( 'bowlingScore.o bowlingScoreTest.cpp' ), CCFLAGS=ccflags, LINKFLAGS=ldflags[tools], INCLUDE=include[tools])
