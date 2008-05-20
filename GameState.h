@@ -2,6 +2,7 @@
 #define GAME_STATE_H
 
 enum GameState {
+  GAME_LOGO,
   GAME_END,
   GAME_RUNNING,
   GAME_WAIT,

@@ -7,6 +7,7 @@
 #include <boost/bind.hpp>
 #include <btBulletDynamicsCommon.h>
 #include <irrlicht.h>
+#include <map>
 #include <boost/array.hpp>
 #include <boost/shared_ptr.hpp>
 using namespace irr;
@@ -34,7 +35,7 @@ using namespace video;
   arrow_(0),
   arrowMesh_(0),
   score_(new bowling::Game()),
-  state_(GAME_WAIT)//,
+  state_(GAME_LOGO)
 //  font_(0)
 {
   pins_->assign(0);
@@ -148,4 +149,41 @@ void AloneBowlingImpl::setupArrow()
   arrow_->setScale(Factor*vector3df(0.5,0.5,0.5));
   arrow_->setRotation(vector3df(180,0,0));
   arrow_->setMaterialFlag(EMF_LIGHTING, false);
+}
+void AloneBowlingImpl::mapInitialize()
+{
+
+  typedef std::pair<wchar_t, irr::video::ITexture*> WIP;
+  map_.insert(WIP(L' ', irrDriver_->getTexture("empty.png")));
+  map_.insert(WIP(L'0', irrDriver_->getTexture("0.png")));
+  map_.insert(WIP(L'1', irrDriver_->getTexture("1.png")));
+  map_.insert(WIP(L'2', irrDriver_->getTexture("2.png")));
+  map_.insert(WIP(L'3', irrDriver_->getTexture("3.png")));
+  map_.insert(WIP(L'4', irrDriver_->getTexture("4.png")));
+  map_.insert(WIP(L'5', irrDriver_->getTexture("5.png")));
+  map_.insert(WIP(L'6', irrDriver_->getTexture("6.png")));
+  map_.insert(WIP(L'7', irrDriver_->getTexture("7.png")));
+  map_.insert(WIP(L'8', irrDriver_->getTexture("8.png")));
+  map_.insert(WIP(L'9', irrDriver_->getTexture("9.png")));
+  map_.insert(WIP(L'X', irrDriver_->getTexture("strike.png")));
+  map_.insert(WIP(L'/', irrDriver_->getTexture("spare.png")));
+  map_.insert(WIP(L'-', irrDriver_->getTexture("none.png")));
+  map_.insert(WIP(L'G', irrDriver_->getTexture("G.png")));
+}
+
+void AloneBowlingImpl::printScore()
+{
+  irrGUI_->clear();
+  printLine(score_->str1(), 0);
+  printLine(score_->str2(), 16);
+  //wcout << *pimpl_->score_ << endl;
+}
+void AloneBowlingImpl::printLine(const std::wstring& str, int y)
+{
+  for(std::size_t i = 0; i != str.size(); ++i) {
+    std::map<wchar_t, irr::video::ITexture*>::iterator iter = map_.find(str[i]);
+    if(iter != map_.end()) {
+      irrGUI_->addImage(iter->second, core::position2d<s32>(i*16,y));
+    }
+  }
 }

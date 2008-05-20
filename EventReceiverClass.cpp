@@ -15,6 +15,9 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
       case KEY_ESCAPE:
         game_->setState(GAME_END);//dev_->closeDevice();
         break;
+      case KEY_RETURN:
+        if(game_->getState()==GAME_RESULT) game_->setState(GAME_END);
+        break;
       case KEY_KEY_2:
         if(game_->getState()==GAME_WAIT) {
           game_->BallSetVelocity(BallSpeed*getXZVector(game_->getArrowRad()), btVector3(0,0,0));

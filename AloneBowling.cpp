@@ -35,12 +35,14 @@ void AloneBowling::run()
 
   //pimpl_->irrDevice_->getCursorControl()->setVisible(0);
   pimpl_->irrDevice_->getFileSystem()->addZipFileArchive("files.zip");
+  pimpl_->arrowMesh_ = pimpl_->irrScene_->addArrowMesh("hoge");
+  pimpl_->mapInitialize();
+  setState(GAME_LOGO);
 
   // Initialize bullet
 
   // Add camera
-  //ICameraSceneNode *Camera = irrScene->addCameraSceneNode();
-  ICameraSceneNode *camera[3] = {0,0};
+  ICameraSceneNode *camera[3] = {0,0,0};
 
   camera[0] = pimpl_->irrScene_->addCameraSceneNode(0, vector3df(0, Factor*0.5f, Factor*-0), vector3df(0, 0, DistanceToHeadPin));
   camera[0]->setFOV(PI/6.0f);
@@ -57,24 +59,15 @@ void AloneBowling::run()
   camera[2]->setUpVector(vector3df(0,0,1));
 
   // Preload textures
-  //irrDriver->getTexture("ice0.jpg");
-  pimpl_->arrowMesh_ = pimpl_->irrScene_->addArrowMesh("hoge");
 
   // Create text
   IGUISkin *skin = pimpl_->irrGUI_->getSkin();
   skin->setColor(EGDC_BUTTON_TEXT, SColor(255, 255, 255, 255));
-  //pimpl_->irrGUI_->addStaticText(L"Hit 1 to create a box\nHit 2 to create a sphere\nHit x to reset", rect<s32>(0, 0, 200, 100), false);
 
   // Create the initial scene
   pimpl_->irrScene_->addLightSceneNode(0, core::vector3df(20, 50, -5), SColorf(4, 4, 4, 1));
-  CreateStartScene();
-  pimpl_->setupArrow();
-  setState(GAME_WAIT);
 
-  IAnimatedMeshSceneNode* node = pimpl_->irrScene_->addAnimatedMeshSceneNode(pimpl_->irrScene_->getMesh("strike.x"));
-  node->setPosition(vector3df(0,1,100));
-  node->setScale(vector3df(10,10,10));
-  //pimpl_->irrGUI_->getSkin()->setColor;
+
 
   for (s32 i=0; i<EGDC_COUNT ; ++i)
   {
@@ -83,50 +76,50 @@ void AloneBowling::run()
     pimpl_->irrGUI_->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
   }
 
-  //pimpl_->font_ = pimpl_->irrGUI_->getFont("/usr/share/fonts/winfont/msgothic.ttc");
   // Main loop
   u32 timeStamp = pimpl_->irrTimer_->getTime(), deltaTime = 0;
-  while(pimpl_->irrDevice_->run()) {
-    GameState state = getState();
-
-    if(state == GAME_END) break;
-
-    if(state == GAME_RUNNING) {
-      pimpl_->tickTimer(deltaTime);
-      if(pimpl_->timeUp()) {
-        SEvent event;
-        event.EventType = EET_USER_EVENT;
-        pimpl_->irrDevice_->postEventFromUser(event);
-      }
-    }
-
+  while(pimpl_->irrDevice_->run() && getState() != GAME_END) {
     deltaTime = pimpl_->irrTimer_->getTime() - timeStamp;
     timeStamp = pimpl_->irrTimer_->getTime();
+    GameState state = getState();
+
+    switch(state) {
+      case GAME_LOGO:
+        if(timeStamp > LogoTime) setState(GAME_WAIT);
+        break;
+      case GAME_RUNNING:
+        pimpl_->tickTimer(deltaTime);
+        if(pimpl_->timeUp()) {
+          SEvent event;
+          event.EventType = EET_USER_EVENT;
+          pimpl_->irrDevice_->postEventFromUser(event);
+        }
+        break;
+      default:
+        break;
+    }
+
 
     pimpl_->UpdatePhysics(deltaTime);
 
-
     pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX,ResY));
-    pimpl_->irrDriver_->beginScene(true, true, SColor(255, 0, 0, 0));
+    pimpl_->irrDriver_->beginScene(true, true, state==GAME_LOGO?SColor(255,255,255,255):SColor(255, 0, 0, 0));
     pimpl_->irrScene_->drawAll();
 
     pimpl_->irrGUI_->drawAll();
 
-    pimpl_->irrScene_->setActiveCamera(camera[1]);
-    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0,ResX,ResY/3));
+    pimpl_->irrScene_->setActiveCamera(camera[2]);
+    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0+32,ResX,ResY/3+32));
     pimpl_->irrScene_->drawAll();
 
-    pimpl_->irrScene_->setActiveCamera(camera[2]);
-    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX/3,ResY/3));
-    pimpl_->irrScene_->drawAll();
+    //pimpl_->irrScene_->setActiveCamera(camera[2]);
+    //pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX/3,ResY/3));
+    //pimpl_->irrScene_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[0]);
 
     pimpl_->irrDriver_->endScene();
-  //wcout << *pimpl_->score_ << endl;
-
   }
-  //wcout << *pimpl_->score_ << endl;
 }
 
 AloneBowling::~AloneBowling()
@@ -185,30 +178,17 @@ void AloneBowling::misc()
   unsigned int temp = pimpl_->score_->getCurrentFrame();
   unsigned int knockedPins = countKnockedPins();
   if(pimpl_->score_->put(knockedPins)) {
-    setState(GAME_END);
+    setState(GAME_RESULT);
   }
   else {
     if(temp != pimpl_->score_->getCurrentFrame() || (temp == 10 && !pimpl_->score_->anyPinIsStanding())) {
       resetScene();
     }
     else {
-      //cleanKnockedPins();
-      pimpl_->setupArrow();
       setState(GAME_WAIT);
     }
   }
-  //wcout << pimpl_->score_->str1() << endl;
-  //wcout << pimpl_->score_->str2() << endl;
-  wcout << *pimpl_->score_ << endl;
- //pimpl_->irrGUI_->addStaticText(wstr.c_str(), core::rect<s32>(0,0,100,100), true);
-  //std::wstring wstr = pimpl_->score_->str1();
-  //ISceneNode* node = pimpl_->irrScene_->addTextSceneNode(pimpl_->font_, wstr.c_str());
-
-  //font->grab();
-  //node->setPosition(vector3df(0,5,10));
-
-  //wcout << knockedPins << endl;
-  //wcout << knockedPins << endl;
+  pimpl_->printScore();
 }
 void AloneBowling::CreateStartScene()
 {
@@ -224,7 +204,6 @@ void AloneBowling::cleanKnockedPins()
 void AloneBowling::resetScene()
 {
   CreateStartScene();
-  pimpl_->setupArrow();
   setState(GAME_WAIT);
 }
 void AloneBowling::SetupPins()
@@ -246,7 +225,25 @@ void AloneBowling::SetupPins()
 
 void AloneBowling::setState(GameState state)
 {
+  if(state == GAME_LOGO) {
+    //irr::scene::ISceneNode* node = pimpl_->irrScene_->addCubeSceneNode();
+    //node->setScale(irr::core::vector3df(800,100,800));
+    //node->setPosition(irr::core::vector3df(0,0,100));
+    //node->setMaterialTexture(0, pimpl_->irrDriver_->getTexture("sofmelogo.tga"));
+    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(-192,176));
+    //node->setMaterialFlag(EMF_LIGHTING, false);
+    //irr::scene::ISceneNodeAnimator* anim = pimpl_->irrScene_->createDeleteAnimator(3000);
+    //node->addAnimator(anim);
+    //anim->drop();
+  }
   if(getState() == GAME_WAIT && state == GAME_RUNNING) pimpl_->setTimer(TimeUp);
+  if(state == GAME_WAIT) {
+    if(getState() == GAME_LOGO) {
+      CreateStartScene();
+      pimpl_->printScore();
+    }
+    pimpl_->setupArrow();
+  }
   pimpl_->state_ = state;
 }
 

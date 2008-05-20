@@ -1,7 +1,9 @@
 #ifndef ALONE_BOWLING_IMPL_H
 #define ALONE_BOWLING_IMPL_H
 
+#include <map>
 #include <boost/shared_ptr.hpp>
+#include <iosfwd>
 #include "bowlingScore.h"
 #include "GameState.h"
 namespace std {
@@ -22,6 +24,7 @@ namespace irr {
   class ILogger;
   namespace video {
     class IVideoDriver;
+    class ITexture;
   }
   namespace scene {
     class ISceneManager;
@@ -45,6 +48,7 @@ class btBroadphaseInterface;
 class btCollisionDispatcher;
 class btSequentialImpulseConstraintSolver;
 class btDiscreteDynamicsWorld;
+//class btContinuousDynamicsWorld;
 class btRigidBody;
 class btVector3;
 typedef float btScalar;
@@ -74,13 +78,18 @@ class AloneBowlingImpl {
     btCollisionDispatcher *dispatcher_;
     btSequentialImpulseConstraintSolver *solver_;
     btDiscreteDynamicsWorld *world_;
+    //btContinuousDynamicsWorld *world_;
     boost::array<btRigidBody*, 10>* pins_;
     irr::scene::ISceneNode* arrow_;
     irr::scene::IAnimatedMesh* arrowMesh_;
     bowling::Game* score_;
     GameState state_;
+    std::map<wchar_t, irr::video::ITexture*> map_;
     //irr::gui::IGUIFont* font_;
+    void mapInitialize();
     void setupArrow();
+    void printScore();
+    void printLine(const std::wstring& str, int y);
     void ClearObjects();
     void ClearObject(btRigidBody* object);
     void vanishObject(btRigidBody* object);
