@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <bullet/LinearMath/btQuaternion.h>
+#include <LinearMath/btQuaternion.h>
 #include "util.h"
 
 int GetRandInt(int TMax) { return std::rand() % TMax; }

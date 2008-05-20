@@ -1,6 +1,7 @@
 #include "bowlingScore.h"
 //#include "util.h"
 #include <boost/format.hpp>
+#include <string>
 #include <iostream>
 using namespace std;
 using namespace boost;
@@ -17,60 +18,88 @@ namespace bowling
   {
     return isStrike(ball1_) || throwed_ == 2;
   }
-  char Frame::letterBall1(unsigned int ball1) const
+  wchar_t Frame::letterBall1(unsigned int ball1) const
   {
-    if(throwed_ == 0) return ' ';
-    else if(isStrike(ball1)) return 'X';
-    else if(ball1 == 0) return 'G';
-    else return '0'+ball1;
+    if(throwed_ == 0) return L' ';
+    else if(isStrike(ball1)) return L'X';
+    else if(ball1 == 0) return L'G';
+    else return L'0'+ball1;
   }
-  char Frame::letterBall2(unsigned int ball1, unsigned int ball2) const
+  wchar_t Frame::letterBall2(unsigned int ball1, unsigned int ball2) const
   {
-    if(throwed_ < 2) return ' ';
+    if(throwed_ < 2) return L' ';
     else return letterBall2Impl(ball1, ball2);
   }
-  char TenthFrame::letterBall2(unsigned int ball1, unsigned int ball2) const
+  wchar_t TenthFrame::letterBall2(unsigned int ball1, unsigned int ball2) const
   {
-    if(throwed_ < 2) return ' ';
+    if(throwed_ < 2) return L' ';
     else if(isStrike(ball1)) {
       return letterBall1(ball2);
     }
     else return letterBall2Impl(ball1, ball2);
   }
-  char Frame::letterBall2Impl(unsigned int ball1, unsigned int ball2) const
+  wchar_t Frame::letterBall2Impl(unsigned int ball1, unsigned int ball2) const
   {
-    if(isSpare(ball1, ball2)) return '/';
-    else if(isStrike(ball1)) return ' ';
-    else if(ball2 == 0) return 'G';
-    else return '0'+ball2;
+    if(isSpare(ball1, ball2)) return L'/';
+    else if(isStrike(ball1)) return L' ';
+    else if(ball2 == 0) return L'G';
+    else return L'0'+ball2;
   }
-  char TenthFrame::letterBall3(unsigned int ball1, unsigned int ball2, unsigned int ball3) const
+  wchar_t TenthFrame::letterBall3(unsigned int ball1, unsigned int ball2, unsigned int ball3) const
   {
-    if(throwed_ != 3) return ' ';
-    else if(isStrike(ball1)) {
-      if(isStrike(ball2)) return letterBall1(ball3);
-      else return letterBall2Impl(ball2, ball3);
-}
-    else {
-      if(isSpare(ball1,ball2)) return letterBall1(ball3);
+    if(throwed_ == 3) {
+      if(isStrike(ball1)) {
+        if(isStrike(ball2)) return letterBall1(ball3);
+        else return letterBall2Impl(ball2, ball3);
+      }
       else {
-        if(ball3) throw 3;
-        return '-';
+        if(isSpare(ball1,ball2)) return letterBall1(ball3);
+        else throw 3;
       }
     }
+    else if(isOver()) return L'-';
+    else return L' ';
   }
-  void Frame::print(std::ostream& os) const
+  std::wstring Frame::str() const
   {
-    cout << letterBall1(ball1_) << letterBall2(ball1_,ball2_);
+    std::wstring str;
+    str += L' ';
+    str += L' ';
+    str += letterBall1(ball1_);
+    str += letterBall2(ball1_,ball2_);
+    return str;
+  }
+  void Frame::print(std::wostream& os) const
+  {
+    std::wstring str;
+    str += L' ';
+    str += L' ';
+    str += letterBall1(ball1_);
+    str += letterBall2(ball1_,ball2_);
+    os << str;
   }
   bool Frame::anyPinIsStanding() const
   {
     return ball1_+ball2_ != 10;
   }
-  void TenthFrame::print(std::ostream& os) const
+
+  std::wstring TenthFrame::str() const
   {
-    cout << letterBall1(ball1_) << letterBall2(ball1_,ball2_)
-      << letterBall3(ball1_, ball2_, ball3_);
+    std::wstring str;
+    str += L' ';
+    str += letterBall1(ball1_);
+    str += letterBall2(ball1_,ball2_);
+    str += letterBall3(ball1_, ball2_, ball3_);
+    return str;
+  }
+  void TenthFrame::print(std::wostream& os) const
+  {
+    std::wstring str;
+    str += L' ';
+    str += letterBall1(ball1_);
+    str += letterBall2(ball1_,ball2_);
+    str += letterBall3(ball1_, ball2_, ball3_);
+    os << str;
   }
 
   bool TenthFrame::anyPinIsStanding() const
@@ -92,7 +121,7 @@ namespace bowling
           !isStrike(ball3_):!isSpare(ball2_,ball3_);
         break;
       default:
-        throw 3;
+        throw "Can't be reach.";
         break;
     }
     return result;
@@ -179,7 +208,7 @@ namespace bowling
   {
     Frame* nextFrame(0);
 
-    for(size_t i = 10; i;) {
+    for(std::size_t i = 10; i;) {
       Frame* frame;
       if(i==10) {
         frame = new TenthFrame(nextFrame);
@@ -210,14 +239,14 @@ namespace bowling
   {
 
     unsigned int sum(0);
-    for(size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < 10; ++i) {
       sum += frames_[i]->calcTotalScore();
     }
     return sum;
   }
   Game::~Game()
   {
-    for(size_t i = 0; i!=10;++i) {
+    for(std::size_t i = 0; i!=10;++i) {
       delete frames_[i];
     }
   }
@@ -227,13 +256,13 @@ namespace bowling
     if(currentFrame_>= 10) throw 1;
     return frames_[currentFrame_]->throwed_+1;
   }
-    
-  unsigned int Game::getFrameScore(size_t frame) const
+
+  unsigned int Game::getFrameScore(std::size_t frame) const
   {
     return frames_[frame]->calcTotalScore();
   }
 
-  unsigned int Game::getScoreOfPoint(size_t frame) const
+  unsigned int Game::getScoreOfPoint(std::size_t frame) const
   {
     unsigned int sum(0);
     do {
@@ -242,14 +271,41 @@ namespace bowling
     return sum;
   }
 
-  void Game::print(std::ostream& os) const
+  std::wstring Game::str1() const
   {
-    for(size_t i = 0; i < 10; ++i) {
-      os << boost::format(i!=9?"%||\t":"%||") % *frames_[i];
+    wstring str;
+    for(std::size_t i = 0; i < 10; ++i) {
+      str += frames_[i]->str();
     }
-    os << '\n';
-    for(size_t i = 0; i < 10; ++i) {
-      os << boost::format(i!=9?"%||\t":"%||") % getScoreOfPoint(i);
+    return str;
+  }
+  std::wstring Game::str2() const
+  {
+    wstring str;
+    unsigned int n = getCurrentFrame();
+    for(std::size_t i = 0; i < 10; ++i) {
+      if(i < n) {
+        //os << boost::wformat(i!=9?L"%||\t":L"%||") % getScoreOfPoint(i);
+        str += boost::str(boost::wformat(L"%|4|") % getScoreOfPoint(i));
+      }
+      else str +=  L"    ";
+    }
+    return str;
+  }
+  void Game::print(std::wostream& os) const
+  {
+    for(std::size_t i = 0; i < 10; ++i) {
+      //os << boost::wformat(i!=9?L"%||":L"%||") % *frames_[i];
+      os << boost::wformat(L"%||") % *frames_[i];
+    }
+    os << L'\n';
+    unsigned int n = getCurrentFrame();
+    for(std::size_t i = 0; i < 10; ++i) {
+      if(i < n) {
+        //os << boost::wformat(i!=9?L"%||\t":L"%||") % getScoreOfPoint(i);
+        os << boost::wformat(L"%|4|") % getScoreOfPoint(i);
+      }
+      else os << L"    ";
     }
 
   }
@@ -257,13 +313,13 @@ namespace bowling
   {
     return frames_[currentFrame_]->anyPinIsStanding();
   }
-  std::ostream& operator<<(std::ostream& os, const Game& rhs)
+  std::wostream& operator<<(std::wostream& os, const Game& rhs)
   {
     rhs.print(os);
     return os;
   }
 
-  std::ostream& operator<<(std::ostream& os, const Frame& rhs)
+  std::wostream& operator<<(std::wostream& os, const Frame& rhs)
   {
     rhs.print(os);
     return os;

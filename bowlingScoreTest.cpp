@@ -10,6 +10,6 @@ int main()
     cin >> a;
     game.put(a);
   }
-  cout << game << endl;
+  wcout << game << endl;
   return 0;
 }

@@ -10,11 +10,12 @@
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/array.hpp>
+#include <boost/format.hpp>
 #include <irrlicht.h>
 #include <LinearMath/btVector3.h>
 #include <btBulletDynamicsCommon.h>
 
-using std::cout;
+using std::wcout;
 using std::endl;
 using namespace irr;
 using namespace core;
@@ -70,6 +71,9 @@ void AloneBowling::run()
   pimpl_->setupArrow();
   setState(GAME_WAIT);
 
+  IAnimatedMeshSceneNode* node = pimpl_->irrScene_->addAnimatedMeshSceneNode(pimpl_->irrScene_->getMesh("strike.x"));
+  node->setPosition(vector3df(0,1,100));
+  node->setScale(vector3df(10,10,10));
   //pimpl_->irrGUI_->getSkin()->setColor;
 
   for (s32 i=0; i<EGDC_COUNT ; ++i)
@@ -78,14 +82,30 @@ void AloneBowling::run()
     col.setAlpha(255);
     pimpl_->irrGUI_->getSkin()->setColor((EGUI_DEFAULT_COLOR)i, col);
   }
+
+  //pimpl_->font_ = pimpl_->irrGUI_->getFont("/usr/share/fonts/winfont/msgothic.ttc");
   // Main loop
   u32 timeStamp = pimpl_->irrTimer_->getTime(), deltaTime = 0;
-  while(pimpl_->irrDevice_->run() && getState() != GAME_END) {
+  while(pimpl_->irrDevice_->run()) {
+    GameState state = getState();
+
+    if(state == GAME_END) break;
+
+    if(state == GAME_RUNNING) {
+      pimpl_->tickTimer(deltaTime);
+      if(pimpl_->timeUp()) {
+        SEvent event;
+        event.EventType = EET_USER_EVENT;
+        pimpl_->irrDevice_->postEventFromUser(event);
+      }
+    }
 
     deltaTime = pimpl_->irrTimer_->getTime() - timeStamp;
     timeStamp = pimpl_->irrTimer_->getTime();
 
     pimpl_->UpdatePhysics(deltaTime);
+
+
     pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX,ResY));
     pimpl_->irrDriver_->beginScene(true, true, SColor(255, 0, 0, 0));
     pimpl_->irrScene_->drawAll();
@@ -103,9 +123,10 @@ void AloneBowling::run()
     pimpl_->irrScene_->setActiveCamera(camera[0]);
 
     pimpl_->irrDriver_->endScene();
+  //wcout << *pimpl_->score_ << endl;
 
   }
-  cout << *pimpl_->score_ << endl;
+  //wcout << *pimpl_->score_ << endl;
 }
 
 AloneBowling::~AloneBowling()
@@ -176,7 +197,18 @@ void AloneBowling::misc()
       setState(GAME_WAIT);
     }
   }
-  cout << knockedPins << endl;
+  //wcout << pimpl_->score_->str1() << endl;
+  //wcout << pimpl_->score_->str2() << endl;
+  wcout << *pimpl_->score_ << endl;
+ //pimpl_->irrGUI_->addStaticText(wstr.c_str(), core::rect<s32>(0,0,100,100), true);
+  //std::wstring wstr = pimpl_->score_->str1();
+  //ISceneNode* node = pimpl_->irrScene_->addTextSceneNode(pimpl_->font_, wstr.c_str());
+
+  //font->grab();
+  //node->setPosition(vector3df(0,5,10));
+
+  //wcout << knockedPins << endl;
+  //wcout << knockedPins << endl;
 }
 void AloneBowling::CreateStartScene()
 {
@@ -199,10 +231,10 @@ void AloneBowling::SetupPins()
 {
   btVector3 vectors[10];
   for(std::size_t i = 0; i != 3; ++i) {
-    vectors[i] = PinsTriangleRadius * getXZVector(btRadians(i*360/3+180));
+    vectors[i] = PinsTriangleRadius * getXZVector(btRadians(btScalar(i)*360/3+180));
   }
   for(std::size_t i = 0; i != 6; ++i) {
-    vectors[i+3] = PinsTriangleRadius/sqrt(3) * getXZVector(btRadians(i*360/6+30));
+    vectors[i+3] = PinsTriangleRadius/sqrt(3.0f) * getXZVector(btRadians(btScalar(i)*360/6+30));
   }
   vectors[9] = btVector3(0, 0, 0);
 
@@ -214,6 +246,7 @@ void AloneBowling::SetupPins()
 
 void AloneBowling::setState(GameState state)
 {
+  if(getState() == GAME_WAIT && state == GAME_RUNNING) pimpl_->setTimer(TimeUp);
   pimpl_->state_ = state;
 }
 

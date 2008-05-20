@@ -1,4 +1,4 @@
-#include <bullet/BulletCollision/CollisionShapes/btSphereShape.h>
+#include <BulletCollision/CollisionShapes/btSphereShape.h>
 #include <irrlicht.h>
 #include "SpherePrototype.h"
 

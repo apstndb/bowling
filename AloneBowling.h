@@ -4,6 +4,7 @@
 #include "GameState.h"
 class AloneBowlingImpl;
 namespace irr {
+  typedef unsigned int u32;
   namespace scene {
     class IAnimatedMesh;
   }
@@ -36,6 +37,9 @@ class AloneBowling {
     void stopArrow();
     void run();
     void misc();
+    void setTimer(irr::u32 timeMs);
+    void tickTimer(irr::u32 timeMs);
+    bool timeUp();
     void setState(GameState state);
     GameState getState();
     ~AloneBowling();

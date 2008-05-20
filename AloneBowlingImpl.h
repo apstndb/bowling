@@ -16,7 +16,8 @@ namespace boost {
 }
 namespace irr {
   typedef unsigned int u32;
-  typedef int s32; class IrrlichtDevice;
+  typedef int s32;
+  class IrrlichtDevice;
   class ITimer;
   class ILogger;
   namespace video {
@@ -29,6 +30,7 @@ namespace irr {
   }
   namespace gui {
     class IGUIEnvironment;
+    //class IGUIFont;
   }
   namespace io {
     class IFileSystem;
@@ -57,6 +59,7 @@ class AloneBowlingImpl {
     btRigidBody* ball_;
     //bool running_;
     AloneBowling* parent_;
+    irr::s32 timer_;
     EventReceiverClass* receiver_;
     irr::IrrlichtDevice *irrDevice_;
     irr::video::IVideoDriver *irrDriver_;
@@ -76,11 +79,25 @@ class AloneBowlingImpl {
     irr::scene::IAnimatedMesh* arrowMesh_;
     bowling::Game* score_;
     GameState state_;
+    //irr::gui::IGUIFont* font_;
     void setupArrow();
     void ClearObjects();
     void ClearObject(btRigidBody* object);
     void vanishObject(btRigidBody* object);
     void UpdatePhysics(irr::u32 TDeltaTime);
+    void setTimer(irr::u32 timeMs)
+    {
+      timer_ = timeMs;
+    }
+    void tickTimer(irr::u32 timeMs)
+    {
+      timer_ -= timeMs;
+      //wcout << pimpl_->timer_ << endl;
+    }
+    bool timeUp()
+    {
+      return timer_ <= 0;
+    }
     btRigidBody*  CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass);
     AloneBowlingImpl(AloneBowling*);
     ~AloneBowlingImpl();

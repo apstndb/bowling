@@ -1,6 +1,6 @@
 #include "MeshPrototype.h"
 #include "constant.h"
-#include <bullet/BulletCollision/CollisionShapes/btCylinderShape.h>
+#include <BulletCollision/CollisionShapes/btCylinderShape.h>
 #include <irrlicht.h>
 using irr::scene::IAnimatedMesh;
 using irr::scene::ISceneManager;
@@ -13,7 +13,7 @@ using irr::core::vector3df;
 ISceneNode* MeshPrototype::createSceneNode(ISceneManager* smgr) const
 {
   ISceneNode* node = smgr->addAnimatedMeshSceneNode(mesh_);
-  node->setScale(vector3df(0.1*Factor, 0.1*Factor, 0.1*Factor));
+  node->setScale(vector3df(0.1f*Factor, 0.1f*Factor, 0.1f*Factor));
   return node;
 
 }

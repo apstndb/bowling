@@ -1,5 +1,5 @@
-#include <irrlicht/irrlicht.h>
-#include <bullet/BulletDynamics/Dynamics/btRigidBody.h>
+#include <irrlicht.h>
+#include <BulletDynamics/Dynamics/btRigidBody.h>
 #include "UpdateRender.h"
 #include "util.h"
 

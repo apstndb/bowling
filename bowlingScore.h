@@ -2,6 +2,7 @@
 #define BOWLING_SCORE_H
 
 #include <iosfwd>
+#include <string>
 
 namespace bowling
 {
@@ -29,11 +30,12 @@ namespace bowling
     virtual bool isOver() const;
     virtual unsigned int calcScore()const;
     unsigned int calcTotalScore()const;
-    char letterBall1(unsigned int ball1) const;
-    virtual char letterBall2(unsigned int ball1, unsigned int ball2) const;
-    char letterBall2Impl(unsigned int ball1, unsigned int ball2) const;
+    wchar_t letterBall1(unsigned int ball1) const;
+    virtual wchar_t letterBall2(unsigned int ball1, unsigned int ball2) const;
+    wchar_t letterBall2Impl(unsigned int ball1, unsigned int ball2) const;
     virtual bool anyPinIsStanding() const;
-    virtual void print(std::ostream& os) const;
+    virtual void print(std::wostream& os) const;
+    virtual std::wstring str() const;
   };
 
   struct TenthFrame : public Frame
@@ -45,10 +47,11 @@ namespace bowling
     virtual bool isOver() const;
     virtual unsigned int calcScore() const;
     unsigned int calcTotalScore() const;
-    virtual void print(std::ostream& os) const;
+    virtual void print(std::wostream& os) const;
     virtual bool anyPinIsStanding() const;
-    virtual char letterBall2(unsigned int ball1, unsigned int ball2) const;
-    char letterBall3(unsigned int ball1, unsigned int ball2,
+    virtual wchar_t letterBall2(unsigned int ball1, unsigned int ball2) const;
+    virtual std::wstring str() const;
+    wchar_t letterBall3(unsigned int ball1, unsigned int ball2,
         unsigned int ball3) const;
   };
 
@@ -67,11 +70,26 @@ namespace bowling
     unsigned int getCurrentBall() const;
     bool put(unsigned int pins);
     bool anyPinIsStanding() const;
-    void print(std::ostream& os) const;
+    void print(std::wostream& os) const;
+    std::wstring str1() const;
+    std::wstring str2() const;
     bool isOver() const;
   };
 
-  std::ostream& operator<<(std::ostream& os, const Game& rhs);
-  std::ostream& operator<<(std::ostream& os, const Frame& rhs);
+  /*std::wostream& operator<<(std::ostream& os, const Game& rhs);
+  std::wostream& operator<<(std::ostream& os, const Frame& rhs);*/
+  template<class _CharT, class _Traits>
+  std::basic_ostream<_CharT, _Traits>& operator<<(std::basic_ostream<_CharT, _Traits>& os, const Game& rhs)
+  {
+    rhs.print(os);
+    return os;
+  }
+
+  template<class _CharT, class _Traits>
+ std::basic_ostream<_CharT, _Traits>& operator<<(std::basic_ostream<_CharT, _Traits>& os, const Frame& rhs)
+  {
+    rhs.print(os);
+    return os;
+  }
 }
 #endif

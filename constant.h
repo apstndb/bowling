@@ -18,4 +18,5 @@ const float BallMass = Pound*8;
 const float BallSpeed = Factor*15.0f;
 const float Gravity = Factor*9.8f;
 const unsigned int ArrowTimeForWay = 1000;
+const unsigned int TimeUp = 3000;
 #endif

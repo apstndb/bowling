@@ -1,6 +1,6 @@
 #include "CubePrototype.h"
-#include <bullet/LinearMath/btVector3.h>
-#include <bullet/BulletCollision/CollisionShapes/btBoxShape.h>
+#include <LinearMath/btVector3.h>
+#include <BulletCollision/CollisionShapes/btBoxShape.h>
 #include <irrlicht.h>
 
 using irr::core::vector3df;

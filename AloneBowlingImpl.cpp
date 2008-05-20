@@ -16,6 +16,7 @@ using namespace video;
   AloneBowlingImpl::AloneBowlingImpl(AloneBowling* parent)
 :ball_(0),
   parent_(parent),
+  timer_(0),
 //  receiver_(new EventReceiverClass(parent, irrDevice_)),
   receiver_(new EventReceiverClass(parent)),
   irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(ResX, ResY), 32, false, false, false, receiver_)),
@@ -33,7 +34,8 @@ using namespace video;
   arrow_(0),
   arrowMesh_(0),
   score_(new bowling::Game()),
-  state_(GAME_WAIT)
+  state_(GAME_WAIT)//,
+//  font_(0)
 {
   pins_->assign(0);
   world_->setGravity(btVector3(0,-Gravity,0));
@@ -76,10 +78,10 @@ void AloneBowlingImpl::vanishObject(btRigidBody* object)
 void AloneBowlingImpl::ClearObjects()
 {
 
-  /*for(core::list<btRigidBody *>::Iterator iterator = objects_->begin(); iterator != objects_->end(); ++iterator) {
+  for(core::list<btRigidBody *>::Iterator iterator = objects_->begin(); iterator != objects_->end(); ++iterator) {
     ClearObject(*iterator);
-    }*/
-  std::for_each(objects_->begin(), objects_->end(), boost::bind(&AloneBowlingImpl::ClearObject, this, _1));
+  }
+//  std::for_each(objects_->begin(), objects_->end(), boost::bind(&AloneBowlingImpl::ClearObject, this, _1));
   objects_->clear();
 }
 // Create a shape rigid body
@@ -138,8 +140,8 @@ void AloneBowlingImpl::setupArrow()
   arrow_ = irrScene_->addAnimatedMeshSceneNode(arrowMesh_);
   //arrow_ = irrScene_->addSphereSceneNode(BallRadius);
   irr::scene::ISceneNodeAnimator* anim(new RoundTripAnimator(irrScene_,
-      vector3df( LaneWidth*1.5,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2)/2)),
-      vector3df(-LaneWidth*1.5,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2)/2)),
+      vector3df( LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
+      vector3df(-LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
       ArrowTimeForWay));
   arrow_->addAnimator(anim);
   anim->drop();
