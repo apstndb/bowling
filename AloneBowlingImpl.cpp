@@ -174,8 +174,9 @@ void AloneBowlingImpl::mapInitialize()
 void AloneBowlingImpl::printScore()
 {
   irrGUI_->clear();
-  printLine(score_->str1(), 0);
-  printLine(score_->str2(), 16);
+  printLine(std::wstring(L"   1   2   3   4   5   6   7   8   9  10"), 0);
+  printLine(score_->str1(), 16);
+  printLine(score_->str2(), 32);
   //wcout << *pimpl_->score_ << endl;
 }
 void AloneBowlingImpl::printLine(const std::wstring& str, int y)

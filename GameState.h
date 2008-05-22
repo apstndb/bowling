@@ -3,6 +3,7 @@
 
 enum GameState {
   GAME_LOGO,
+  GAME_TITLE,
   GAME_END,
   GAME_RUNNING,
   GAME_WAIT,
