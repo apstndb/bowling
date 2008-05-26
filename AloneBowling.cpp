@@ -112,8 +112,8 @@ void AloneBowling::run()
     pimpl_->irrGUI_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[2]);
-    //    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0+32,ResX,ResY/3+32));
-    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,ResX/3,ResY/3+48));
+//    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0+32,ResX,ResY/3+32));
+	pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,ResX/3,ResY/3+48));
     pimpl_->irrScene_->drawAll();
 
     //pimpl_->irrScene_->setActiveCamera(camera[2]);
@@ -231,35 +231,35 @@ void AloneBowling::setState(GameState state)
 {
   pimpl_->irrGUI_->clear();
   switch(state) {
-    case GAME_LOGO:
-      //irr::scene::ISceneNode* node = pimpl_->irrScene_->addCubeSceneNode();
-      //node->setScale(irr::core::vector3df(800,100,800));
-      //node->setPosition(irr::core::vector3df(0,0,100));
-      //node->setMaterialTexture(0, pimpl_->irrDriver_->getTexture("sofmelogo.tga"));
-      //pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(-192,176));
-      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
-      //node->setMaterialFlag(EMF_LIGHTING, false);
-      //irr::scene::ISceneNodeAnimator* anim = pimpl_->irrScene_->createDeleteAnimator(3000);
-      //node->addAnimator(anim);
-      //anim->drop();
-      break;
-    case GAME_TITLE:
-      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
-      break;
-      //if(getState() == GAME_WAIT && state == GAME_RUNNING) pimpl_->setTimer(TimeUp);
-    case GAME_RUNNING:
-      if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
+  case GAME_LOGO:
+    //irr::scene::ISceneNode* node = pimpl_->irrScene_->addCubeSceneNode();
+    //node->setScale(irr::core::vector3df(800,100,800));
+    //node->setPosition(irr::core::vector3df(0,0,100));
+    //node->setMaterialTexture(0, pimpl_->irrDriver_->getTexture("sofmelogo.tga"));
+    //pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(-192,176));
+    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
+    //node->setMaterialFlag(EMF_LIGHTING, false);
+    //irr::scene::ISceneNodeAnimator* anim = pimpl_->irrScene_->createDeleteAnimator(3000);
+    //node->addAnimator(anim);
+    //anim->drop();
+	break;
+  case GAME_TITLE:
+    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
+    break;
+  //if(getState() == GAME_WAIT && state == GAME_RUNNING) pimpl_->setTimer(TimeUp);
+  case GAME_RUNNING:
+    if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
+	pimpl_->printScore();
+	break;
+  case GAME_WAIT:
+    if(getState() == GAME_TITLE) {
+      CreateStartScene();
       pimpl_->printScore();
-      break;
-    case GAME_WAIT:
-      if(getState() == GAME_TITLE) {
-        CreateStartScene();
-        pimpl_->printScore();
-      }
-      pimpl_->setupArrow();
-      break;
-    default:
-      break;
+	}
+    pimpl_->setupArrow();
+    break;
+  default:
+    break;
   }
   pimpl_->state_ = state;
 }

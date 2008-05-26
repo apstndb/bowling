@@ -20,7 +20,7 @@ using namespace video;
   timer_(0),
 //  receiver_(new EventReceiverClass(parent, irrDevice_)),
   receiver_(new EventReceiverClass(parent)),
-  irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(ResX, ResY), 32, false, false, false, receiver_)),
+  irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(ResX, ResY), 32, FullScreen, false, false, receiver_)),
   irrDriver_(irrDevice_->getVideoDriver()),
   irrScene_(irrDevice_->getSceneManager()),
   irrGUI_(irrDevice_->getGUIEnvironment()),
@@ -184,7 +184,7 @@ void AloneBowlingImpl::printLine(const std::wstring& str, int y)
   for(std::size_t i = 0; i != str.size(); ++i) {
     std::map<wchar_t, irr::video::ITexture*>::iterator iter = map_.find(str[i]);
     if(iter != map_.end()) {
-      irrGUI_->addImage(iter->second, core::position2d<s32>(i*16,y));
+		irrGUI_->addImage(iter->second, core::position2d<s32>(irr::s32(i)*16,y));
     }
   }
 }
