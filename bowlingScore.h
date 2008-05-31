@@ -3,6 +3,7 @@
 
 #include <iosfwd>
 #include <string>
+#include <vector>
 
 namespace bowling
 {
@@ -58,10 +59,11 @@ namespace bowling
   class Game
   {
     private:
+    std::vector<Frame*> frames_;
     unsigned int currentFrame_;
-    Frame* frames_[10];
+    const unsigned int numberOfFrames_;
     public:
-    Game();
+    Game(unsigned int num);
     ~Game();
     unsigned int getFrameScore(size_t frame) const;
     unsigned int getScoreOfPoint(size_t frame) const;
@@ -70,6 +72,10 @@ namespace bowling
     unsigned int getCurrentBall() const;
     bool put(unsigned int pins);
     bool anyPinIsStanding() const;
+    unsigned int numberOfFrames() const
+    {
+      return numberOfFrames_;
+    }
     void print(std::wostream& os) const;
     std::wstring str1() const;
     std::wstring str2() const;

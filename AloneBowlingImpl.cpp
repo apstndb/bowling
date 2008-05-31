@@ -9,11 +9,13 @@
 #include <irrlicht.h>
 #include <map>
 #include <boost/array.hpp>
+#include <boost/format.hpp>
 #include <boost/shared_ptr.hpp>
 using namespace irr;
 using namespace core;
 using namespace scene;
 using namespace video;
+using boost::wformat;
   AloneBowlingImpl::AloneBowlingImpl(AloneBowling* parent)
 :ball_(0),
   parent_(parent),
@@ -34,7 +36,7 @@ using namespace video;
   pins_(new boost::array<btRigidBody*, 10>),
   arrow_(0),
   arrowMesh_(0),
-  score_(new bowling::Game()),
+  score_(new bowling::Game(NumberOfFrames)),
   state_(GAME_LOGO)
 //  font_(0)
 {
@@ -173,8 +175,15 @@ void AloneBowlingImpl::mapInitialize()
 
 void AloneBowlingImpl::printScore()
 {
+  static std::wstring wstr;
+  if(wstr.empty()) {
+    for(std::size_t i = 0; i < score_->numberOfFrames(); ++i) {
+      wstr += str(wformat(L"% 4d") % (i+1));
+    }
+  }
   //irrGUI_->clear();
-  printLine(std::wstring(L"   1   2   3   4   5   6   7   8   9  10"), 0);
+  //printLine(std::wstring(L"   1   2   3   4   5   6   7   8   9  10"), 0);
+  printLine(wstr, 0);
   printLine(score_->str1(), 16);
   printLine(score_->str2(), 32);
   //wcout << *pimpl_->score_ << endl;

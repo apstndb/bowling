@@ -203,14 +203,14 @@ namespace bowling
   {
     return ball1_+ball2_+ball3_;
   }
-  Game::Game()
-    :currentFrame_(0)
+  Game::Game(unsigned int num)
+    :frames_(num), currentFrame_(0), numberOfFrames_(num)
   {
     Frame* nextFrame(0);
 
-    for(std::size_t i = 10; i;) {
+    for(std::size_t i = numberOfFrames(); i;) {
       Frame* frame;
-      if(i==10) {
+      if(i == numberOfFrames()) {
         frame = new TenthFrame(nextFrame);
       }
       else {
@@ -221,7 +221,7 @@ namespace bowling
   }
   bool Game::isOver() const
   {
-    return currentFrame_ == 10;
+    return currentFrame_ == numberOfFrames();
   }
   bool Game::put(unsigned int pins)
   {
@@ -239,21 +239,21 @@ namespace bowling
   {
 
     unsigned int sum(0);
-    for(std::size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < numberOfFrames(); ++i) {
       sum += frames_[i]->calcTotalScore();
     }
     return sum;
   }
   Game::~Game()
   {
-    for(std::size_t i = 0; i!=10;++i) {
+    for(std::size_t i = 0; i != numberOfFrames();++i) {
       delete frames_[i];
     }
   }
 
   unsigned int Game::getCurrentBall() const
   {
-    if(currentFrame_>= 10) throw 1;
+    if(currentFrame_>= numberOfFrames()) throw 1;
     return frames_[currentFrame_]->throwed_+1;
   }
 
@@ -274,7 +274,7 @@ namespace bowling
   std::wstring Game::str1() const
   {
     wstring str;
-    for(std::size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < numberOfFrames(); ++i) {
       str += frames_[i]->str();
     }
     return str;
@@ -283,7 +283,7 @@ namespace bowling
   {
     wstring str;
     unsigned int n = getCurrentFrame();
-    for(std::size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < numberOfFrames(); ++i) {
       if(i < n) {
         //os << boost::wformat(i!=9?L"%||\t":L"%||") % getScoreOfPoint(i);
         str += boost::str(boost::wformat(L"%|4|") % getScoreOfPoint(i));
@@ -294,13 +294,13 @@ namespace bowling
   }
   void Game::print(std::wostream& os) const
   {
-    for(std::size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < numberOfFrames(); ++i) {
       //os << boost::wformat(i!=9?L"%||":L"%||") % *frames_[i];
       os << boost::wformat(L"%||") % *frames_[i];
     }
     os << L'\n';
     unsigned int n = getCurrentFrame();
-    for(std::size_t i = 0; i < 10; ++i) {
+    for(std::size_t i = 0; i < numberOfFrames(); ++i) {
       if(i < n) {
         //os << boost::wformat(i!=9?L"%||\t":L"%||") % getScoreOfPoint(i);
         os << boost::wformat(L"%|4|") % getScoreOfPoint(i);

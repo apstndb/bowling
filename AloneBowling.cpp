@@ -6,7 +6,7 @@
 #include "util.h"
 #include "constant.h"
 #include "bowlingScore.h"
-#include <iostream>
+//#include <iostream>
 #include <algorithm>
 #include <boost/bind.hpp>
 #include <boost/array.hpp>
@@ -15,8 +15,9 @@
 #include <LinearMath/btVector3.h>
 #include <btBulletDynamicsCommon.h>
 
-using std::wcout;
+/*using std::wcout;
 using std::endl;
+*/
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -194,14 +195,14 @@ unsigned int AloneBowling::countKnockedPins()
   boost::array<btRigidBody*, 10>::iterator end(pins.end());
   for(boost::array<btRigidBody*, 10>::iterator i = pins.begin();
       i != end; ++i) {
-    if(*i && (*i)->getCenterOfMassPosition().y() < PinsHeight/2-0.1) {
+    if(*i && (*i)->getCenterOfMassPosition().y() < PinsHeight/2-0.05) {
       pimpl_->vanishObject(*i);
       *i = 0;
       ++result;
     }
   }
-  btPoint3 t(pimpl_->ball_->getCenterOfMassPosition());
-  wcout << t.x() << L' ' << t.y() << L' ' << t.z() << endl;
+  //btPoint3 t(pimpl_->ball_->getCenterOfMassPosition());
+  //wcout << t.x() << L' ' << t.y() << L' ' << t.z() << endl;
   return result;
 }
 
@@ -213,7 +214,7 @@ void AloneBowling::misc()
     setState(GAME_RESULT);
   }
   else {
-    if(temp != pimpl_->score_->getCurrentFrame() || (temp == 10 && !pimpl_->score_->anyPinIsStanding())) {
+    if(temp != pimpl_->score_->getCurrentFrame() || (temp == pimpl_->score_->numberOfFrames() && !pimpl_->score_->anyPinIsStanding())) {
       resetScene();
     }
     else {

@@ -108,7 +108,7 @@ class AloneBowlingImpl {
       return timer_ <= 0;
     }
     btRigidBody*  CreateShape(const Prototype &prototype, const btVector3 &TPosition, btScalar TMass);
-    AloneBowlingImpl(AloneBowling*);
+    AloneBowlingImpl(AloneBowling* parent);
     ~AloneBowlingImpl();
 };
 #endif

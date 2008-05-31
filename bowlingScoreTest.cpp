@@ -5,7 +5,7 @@ using namespace std;
 int main()
 {
   int a;
-  bowling::Game game;
+  bowling::Game game(3);
   while(!game.isOver()) {
     cin >> a;
     game.put(a);
