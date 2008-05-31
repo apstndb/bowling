@@ -1,10 +1,11 @@
 #ifndef CONSTANT_H
 #define CONSTANT_H
-const bool FullScreen = true;
+const bool FullScreen = false;
 const float Factor = 10.0f;
-const unsigned int ResX = 1024;//640;//1024;
-const unsigned int ResY = 768;
+const unsigned int ResX = 640;//640;//1024;
+const unsigned int ResY = 480;
 const float DistanceToHeadPin = Factor*18.29f;
+const float LimitOfBallPosition = Factor*-5.0f;
 const float PinsTriangleRadius = Factor*0.4f;
 const float PinsHeight = Factor* 0.381f;
 const float PinsRadius = Factor*0.121f/2;

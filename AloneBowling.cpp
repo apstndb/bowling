@@ -35,6 +35,27 @@ void AloneBowling::run()
 
   //pimpl_->irrDevice_->getCursorControl()->setVisible(0);
   pimpl_->irrDevice_->getFileSystem()->addZipFileArchive("files.zip");
+  pimpl_->irrDriver_->getTexture("wood.tga");
+  pimpl_->irrDriver_->getTexture("sofmelogo.tga");
+  pimpl_->irrDriver_->getTexture("titlelogo.tga");
+  pimpl_->irrDriver_->getTexture("sign.tga");
+  pimpl_->irrDriver_->getTexture("empty.png");
+  pimpl_->irrDriver_->getTexture("0.png");
+  pimpl_->irrDriver_->getTexture("1.png");
+  pimpl_->irrDriver_->getTexture("2.png");
+  pimpl_->irrDriver_->getTexture("3.png");
+  pimpl_->irrDriver_->getTexture("4.png");
+  pimpl_->irrDriver_->getTexture("5.png");
+  pimpl_->irrDriver_->getTexture("6.png");
+  pimpl_->irrDriver_->getTexture("7.png");
+  pimpl_->irrDriver_->getTexture("8.png");
+  pimpl_->irrDriver_->getTexture("9.png");
+  pimpl_->irrDriver_->getTexture("strike.png");
+  pimpl_->irrDriver_->getTexture("spare.png");
+  pimpl_->irrDriver_->getTexture("none.png");
+  pimpl_->irrDriver_->getTexture("G.png");
+  pimpl_->irrScene_->getMesh("pin.x");
+
   pimpl_->arrowMesh_ = pimpl_->irrScene_->addArrowMesh("hoge");
   pimpl_->mapInitialize();
   setState(GAME_LOGO);
@@ -91,12 +112,17 @@ void AloneBowling::run()
         if(timeStamp > TitleTime) setState(GAME_WAIT);
         break;
       case GAME_RUNNING:
+        if(LimitOfBallPosition > pimpl_->ball_->getCenterOfMassPosition().y()) {
+          misc();
+        }
+        /*
         pimpl_->tickTimer(deltaTime);
         if(pimpl_->timeUp()) {
           SEvent event;
           event.EventType = EET_USER_EVENT;
           pimpl_->irrDevice_->postEventFromUser(event);
         }
+        */
         break;
       default:
         break;
@@ -174,6 +200,8 @@ unsigned int AloneBowling::countKnockedPins()
       ++result;
     }
   }
+  btPoint3 t(pimpl_->ball_->getCenterOfMassPosition());
+  wcout << t.x() << L' ' << t.y() << L' ' << t.z() << endl;
   return result;
 }
 

@@ -64,11 +64,11 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
   }
   else if(tEvent.EventType == EET_USER_EVENT) {
     if(game_->getState() == GAME_LOGO) {
-	  game_->setState(GAME_TITLE);
-	}
-	else {
+      game_->setState(GAME_TITLE);
+    }
+    else {
       game_->misc();
-	}
+    }
     return true;
   }
 
