@@ -40,7 +40,7 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
   else if(tEvent.EventType == EET_MOUSE_INPUT_EVENT) {
     switch(tEvent.MouseInput.Event) {
       case EMIE_LMOUSE_PRESSED_DOWN:
-		  zAxisSpin = Spin*(btScalar(tEvent.MouseInput.X)/ResX-0.5f);
+		  zAxisSpin = -Spin*(btScalar(tEvent.MouseInput.X)/ResX-0.5f);
 		  xAxisSpin = Spin*(btScalar(tEvent.MouseInput.Y)/ResY-0.5f);
 //        wcout << tEvent.MouseInput.X << L'\n' << tEvent.MouseInput.Y << endl;
 //		wcout << zAxisSpin << L' '<< xAxisSpin;
@@ -51,12 +51,10 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
           game_->setState(GAME_RUNNING);
         }
         break;
-      /*case EMIE_RMOUSE_PRESSED_DOWN:
-        if(game_->getState()==GAME_RUNNING) {
-          game_->misc();
-        }
+      case EMIE_RMOUSE_PRESSED_DOWN:
+	  if(game_->getState()==GAME_RESULT) game_->setState(GAME_END);
         break;
-        */
+        
       default:
         return false;
         break;

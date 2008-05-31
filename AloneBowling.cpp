@@ -201,10 +201,12 @@ void AloneBowling::CreateStartScene()
   SetupPins();
 }
 
+/*
 void AloneBowling::cleanKnockedPins()
 {
 
 }
+*/
 void AloneBowling::resetScene()
 {
   CreateStartScene();
@@ -232,21 +234,11 @@ void AloneBowling::setState(GameState state)
   pimpl_->irrGUI_->clear();
   switch(state) {
   case GAME_LOGO:
-    //irr::scene::ISceneNode* node = pimpl_->irrScene_->addCubeSceneNode();
-    //node->setScale(irr::core::vector3df(800,100,800));
-    //node->setPosition(irr::core::vector3df(0,0,100));
-    //node->setMaterialTexture(0, pimpl_->irrDriver_->getTexture("sofmelogo.tga"));
-    //pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(-192,176));
     pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
-    //node->setMaterialFlag(EMF_LIGHTING, false);
-    //irr::scene::ISceneNodeAnimator* anim = pimpl_->irrScene_->createDeleteAnimator(3000);
-    //node->addAnimator(anim);
-    //anim->drop();
 	break;
   case GAME_TITLE:
     pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
     break;
-  //if(getState() == GAME_WAIT && state == GAME_RUNNING) pimpl_->setTimer(TimeUp);
   case GAME_RUNNING:
     if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
 	pimpl_->printScore();
@@ -257,6 +249,9 @@ void AloneBowling::setState(GameState state)
       pimpl_->printScore();
 	}
     pimpl_->setupArrow();
+	break;
+  case GAME_RESULT:
+    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sign.tga"), position2d<s32>(ResX/2-200/2,ResY/2-25/2));
     break;
   default:
     break;
@@ -264,10 +259,6 @@ void AloneBowling::setState(GameState state)
   pimpl_->state_ = state;
 }
 
-GameState AloneBowling::getState()
-{
-  return pimpl_->state_;
-}
 
 float AloneBowling::getArrowRad()
 {
@@ -276,6 +267,10 @@ float AloneBowling::getArrowRad()
   return atan2f(pos.X, pos.Z);
 }
 
+GameState AloneBowling::getState()
+{
+  return pimpl_->state_;
+}
 void AloneBowling::stopArrow()
 {
   pimpl_->arrow_->removeAnimators();

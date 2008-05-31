@@ -24,7 +24,6 @@ class AloneBowling {
   public:
     void CreateStartScene();
     void resetScene();
-    void cleanKnockedPins();
     void SetupPins();
     btRigidBody* CreateMesh(const btVector3 &TPosition, irr::scene::IAnimatedMesh* mesh, btScalar TMass);
     btRigidBody* CreateSphere(const btVector3 &TPosition, btScalar TRadius, btScalar TMass);
@@ -37,8 +36,6 @@ class AloneBowling {
     void stopArrow();
     void run();
     void misc();
-    void setTimer(irr::u32 timeMs);
-    void tickTimer(irr::u32 timeMs);
     bool timeUp();
     void setState(GameState state);
     GameState getState();
