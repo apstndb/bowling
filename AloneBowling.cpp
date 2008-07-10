@@ -6,18 +6,10 @@
 #include "util.h"
 #include "constant.h"
 #include "bowlingScore.h"
-//#include <iostream>
-#include <algorithm>
-#include <boost/bind.hpp>
 #include <boost/array.hpp>
-#include <boost/format.hpp>
 #include <irrlicht.h>
-#include <LinearMath/btVector3.h>
 #include <btBulletDynamicsCommon.h>
 
-/*using std::wcout;
-using std::endl;
-*/
 using namespace irr;
 using namespace core;
 using namespace scene;
@@ -33,8 +25,6 @@ using namespace gui;
 void AloneBowling::run()
 {
   // Initialize irrlicht
-
-  //pimpl_->irrDevice_->getCursorControl()->setVisible(0);
   pimpl_->irrDevice_->getFileSystem()->addZipFileArchive("files.zip");
   pimpl_->irrDriver_->getTexture("wood.tga");
   pimpl_->irrDriver_->getTexture("sofmelogo.tga");
@@ -116,14 +106,6 @@ void AloneBowling::run()
         if(LimitOfBallPosition > pimpl_->ball_->getCenterOfMassPosition().y()) {
           misc();
         }
-        /*
-        pimpl_->tickTimer(deltaTime);
-        if(pimpl_->timeUp()) {
-          SEvent event;
-          event.EventType = EET_USER_EVENT;
-          pimpl_->irrDevice_->postEventFromUser(event);
-        }
-        */
         break;
       default:
         break;
@@ -139,13 +121,8 @@ void AloneBowling::run()
     pimpl_->irrGUI_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[2]);
-//    pimpl_->irrDriver_->setViewPort(rect<s32>(2*ResX/3,0+32,ResX,ResY/3+32));
-	pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,ResX/3,ResY/3+48));
+    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,ResX/3,ResY/3+48));
     pimpl_->irrScene_->drawAll();
-
-    //pimpl_->irrScene_->setActiveCamera(camera[2]);
-    //pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX/3,ResY/3));
-    //pimpl_->irrScene_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[0]);
 
@@ -201,8 +178,7 @@ unsigned int AloneBowling::countKnockedPins()
       ++result;
     }
   }
-  //btPoint3 t(pimpl_->ball_->getCenterOfMassPosition());
-  //wcout << t.x() << L' ' << t.y() << L' ' << t.z() << endl;
+
   return result;
 }
 
@@ -230,12 +206,6 @@ void AloneBowling::CreateStartScene()
   SetupPins();
 }
 
-/*
-void AloneBowling::cleanKnockedPins()
-{
-
-}
-*/
 void AloneBowling::resetScene()
 {
   CreateStartScene();
@@ -262,28 +232,28 @@ void AloneBowling::setState(GameState state)
 {
   pimpl_->irrGUI_->clear();
   switch(state) {
-  case GAME_LOGO:
-    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
-	break;
-  case GAME_TITLE:
-    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
-    break;
-  case GAME_RUNNING:
-    if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
-	pimpl_->printScore();
-	break;
-  case GAME_WAIT:
-    if(getState() == GAME_TITLE) {
-      CreateStartScene();
+    case GAME_LOGO:
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
+      break;
+    case GAME_TITLE:
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
+      break;
+    case GAME_RUNNING:
+      if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
       pimpl_->printScore();
-	}
-    pimpl_->setupArrow();
-	break;
-  case GAME_RESULT:
-    pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sign.tga"), position2d<s32>(ResX/2-200/2,ResY/2-25/2));
-    break;
-  default:
-    break;
+      break;
+    case GAME_WAIT:
+      if(getState() == GAME_TITLE) {
+        CreateStartScene();
+        pimpl_->printScore();
+      }
+      pimpl_->setupArrow();
+      break;
+    case GAME_RESULT:
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sign.tga"), position2d<s32>(ResX/2-200/2,ResY/2-25/2));
+      break;
+    default:
+      break;
   }
   pimpl_->state_ = state;
 }

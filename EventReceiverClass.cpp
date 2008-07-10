@@ -4,12 +4,9 @@
 #include "AloneBowling.h"
 #include <irrlicht.h>
 #include <LinearMath/btVector3.h>
-#include <iostream>
 
 using namespace irr;
 using namespace core;
-using std::endl;
-using std::wcout;
 bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
   btScalar zAxisSpin, xAxisSpin;
   if(tEvent.EventType == EET_KEY_INPUT_EVENT && !tEvent.KeyInput.PressedDown) {
@@ -42,8 +39,6 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
       case EMIE_LMOUSE_PRESSED_DOWN:
 		  zAxisSpin = -Spin*(btScalar(tEvent.MouseInput.X)/ResX-0.5f);
 		  xAxisSpin = Spin*(btScalar(tEvent.MouseInput.Y)/ResY-0.5f);
-//        wcout << tEvent.MouseInput.X << L'\n' << tEvent.MouseInput.Y << endl;
-//		wcout << zAxisSpin << L' '<< xAxisSpin;
         if(game_->getState()==GAME_WAIT) {
           game_->BallSetVelocity(BallSpeed*getXZVector(game_->getArrowRad()),
 			btVector3(xAxisSpin, 0.0f, zAxisSpin));

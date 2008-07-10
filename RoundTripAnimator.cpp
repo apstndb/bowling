@@ -1,6 +1,5 @@
 #include "RoundTripAnimator.h"
 #include <irrlicht.h>
-#include <iostream>
 #include <algorithm>
 
 using namespace std;
@@ -17,14 +16,11 @@ void RoundTripAnimator::animateNode(irr::scene::ISceneNode* node, irr::u32 timeM
     initialized_ = true;
   }
   time_+= diffTime;
-  //cout << diffTime << ' ' << time_ << ' ' << timeForWay_ << tol;
   if(time_>timeForWay_) {
     if(anim_) {
       node->removeAnimator(anim_);
       anim_->drop();
     }
-    //node->removeAnimator();
-    //node->addAnimator(this);
     anim_ = smgr_->createFlyStraightAnimator(from_, to_, timeForWay_, false);
     node->addAnimator(anim_);
     std::swap(from_, to_);

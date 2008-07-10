@@ -6,7 +6,6 @@ int GetRandInt(int TMax) { return std::rand() % TMax; }
 
 btVector3 getXZVector(btScalar rad)
 {
-  //btScalar rad = btRadians(deg);
   return btVector3(sin(rad), 0.0f, cos(rad));
 }
 
@@ -24,5 +23,5 @@ void QuaternionToEuler(const btQuaternion &tQuat, btVector3 &tEuler) {
   tEuler.setX(atan2f(2.0f * (y * z + x * w), -xSquared - ySquared + zSquared + wSquared));
   tEuler.setY(asinf(-2.0f * (x * z - y * w)));
   tEuler.setZ(atan2f(2.0f * (x * y + z * w), xSquared - ySquared - zSquared + wSquared));
-  tEuler *= SIMD_DEGS_PER_RAD;//irr::core::RADTODEG;
+  tEuler *= SIMD_DEGS_PER_RAD;
 }
