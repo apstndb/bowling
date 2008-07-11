@@ -36,6 +36,7 @@ class AloneBowling {
     void stopArrow();
     void run();
     void misc();
+    void start(unsigned int n);
     bool timeUp();
     void setState(GameState state);
     GameState getState();

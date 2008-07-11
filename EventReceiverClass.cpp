@@ -17,16 +17,19 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
       case KEY_RETURN:
         if(game_->getState()==GAME_RESULT) game_->setState(GAME_END);
         break;
-      /*case KEY_KEY_2:
-        if(game_->getState()==GAME_WAIT) {
-          game_->BallSetVelocity(BallSpeed*getXZVector(game_->getArrowRad()), btVector3(0,0,0));
-          game_->stopArrow();
-          game_->setState(GAME_RUNNING);
-        }
-        break;*/
-      /*case KEY_KEY_X:
-        game_->misc();
-        break;*/
+      case KEY_KEY_1:
+      case KEY_KEY_2:
+      case KEY_KEY_3:
+      case KEY_KEY_4:
+      case KEY_KEY_5:
+      case KEY_KEY_6:
+      case KEY_KEY_7:
+      case KEY_KEY_8:
+      case KEY_KEY_9:
+      case KEY_KEY_0:
+        game_->start((tEvent.KeyInput.Key==KEY_KEY_0)?
+            10:tEvent.KeyInput.Key-KEY_KEY_0);
+        break;
       default:
         return false;
         break;

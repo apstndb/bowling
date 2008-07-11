@@ -82,7 +82,7 @@ class AloneBowlingImpl {
     boost::array<btRigidBody*, 10>* pins_;
     irr::scene::ISceneNode* arrow_;
     irr::scene::IAnimatedMesh* arrowMesh_;
-    bowling::Game* score_;
+    boost::shared_ptr<bowling::Game> score_;
     GameState state_;
     std::map<wchar_t, irr::video::ITexture*> map_;
     //irr::gui::IGUIFont* font_;

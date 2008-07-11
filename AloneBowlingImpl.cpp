@@ -38,11 +38,6 @@ using boost::wformat;
   arrowMesh_(0),
   state_(GAME_LOGO)
 {
-  int numberOfFrames;
-  ifstream fin("config.txt");
-  if(fin >> numberOfFrames) score_ = new bowling::Game(numberOfFrames);
-  else score_ = new bowling::Game(DefaultNumberOfFrames);
-
   pins_->assign(0);
   world_->setGravity(btVector3(0,-Gravity,0));
 }
@@ -119,7 +114,6 @@ AloneBowlingImpl::~AloneBowlingImpl()
   delete broadPhase_;
   delete objects_;
   delete collisionConfiguration_;
-  delete score_;
   irrDevice_->drop();
   delete receiver_;
 }
@@ -161,12 +155,12 @@ void AloneBowlingImpl::mapInitialize()
 
 void AloneBowlingImpl::printScore()
 {
-  static std::wstring wstr;
-  if(wstr.empty()) {
+  std::wstring wstr;
+  //if(wstr.empty()) {
     for(std::size_t i = 0; i < score_->numberOfFrames(); ++i) {
       wstr += str(wformat(L"% 4d") % (i+1));
     }
-  }
+  //}
   printLine(wstr, 0);
   printLine(score_->str1(), 16);
   printLine(score_->str2(), 32);

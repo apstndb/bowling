@@ -100,7 +100,7 @@ void AloneBowling::run()
         if(timeStamp > LogoTime) setState(GAME_TITLE);
         break;
       case GAME_TITLE:
-        if(timeStamp > TitleTime) setState(GAME_WAIT);
+        if(timeStamp > TitleTime) start(DefaultNumberOfFrames);
         break;
       case GAME_RUNNING:
         if(LimitOfBallPosition > pimpl_->ball_->getCenterOfMassPosition().y()) {
@@ -228,25 +228,31 @@ void AloneBowling::SetupPins()
   }
 }
 
-void AloneBowling::setState(GameState state)
+void AloneBowling::start(unsigned int n)
 {
   pimpl_->irrGUI_->clear();
+  pimpl_->score_ = boost::shared_ptr<bowling::Game>(new bowling::Game(n));
+  CreateStartScene();
+  pimpl_->printScore();
+  setState(GAME_WAIT);
+}
+void AloneBowling::setState(GameState state)
+{
+  //pimpl_->irrGUI_->clear();
   switch(state) {
     case GAME_LOGO:
+      pimpl_->irrGUI_->clear();
       pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
       break;
     case GAME_TITLE:
+      pimpl_->irrGUI_->clear();
       pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
       break;
     case GAME_RUNNING:
       if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
-      pimpl_->printScore();
+      //pimpl_->printScore();
       break;
     case GAME_WAIT:
-      if(getState() == GAME_TITLE) {
-        CreateStartScene();
-        pimpl_->printScore();
-      }
       pimpl_->setupArrow();
       break;
     case GAME_RESULT:
