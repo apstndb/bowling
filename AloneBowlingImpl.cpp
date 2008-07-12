@@ -6,7 +6,8 @@
 #include "constant.h"
 #include <btBulletDynamicsCommon.h>
 #include <irrlicht.h>
-#include <fstream>
+//#include <fstream>
+#include <iostream>
 #include <map>
 #include <boost/array.hpp>
 #include <boost/format.hpp>
@@ -15,14 +16,14 @@ using namespace irr;
 using namespace core;
 using namespace scene;
 using namespace video;
-using std::ifstream;
+//using std::ifstream;
 using boost::wformat;
   AloneBowlingImpl::AloneBowlingImpl(AloneBowling* parent)
 :ball_(0),
   parent_(parent),
   timer_(0),
   receiver_(new EventReceiverClass(parent)),
-  irrDevice_(createDevice(video::EDT_OPENGL, core::dimension2di(ResX, ResY), 32, FullScreen, false, false, receiver_)),
+  irrDevice_(myCreateDevice(video::EDT_OPENGL, core::dimension2di(0,0), 32, FullScreen, false, false, receiver_)),
   irrDriver_(irrDevice_->getVideoDriver()),
   irrScene_(irrDevice_->getSceneManager()),
   irrGUI_(irrDevice_->getGUIEnvironment()),
@@ -123,9 +124,9 @@ void AloneBowlingImpl::setupArrow()
   if(arrow_) arrow_->remove();
   arrow_ = irrScene_->addAnimatedMeshSceneNode(arrowMesh_);
   irr::scene::ISceneNodeAnimator* anim(new RoundTripAnimator(irrScene_,
-      vector3df( LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
-      vector3df(-LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
-      ArrowTimeForWay));
+        vector3df( LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
+        vector3df(-LaneWidth*1.5f,Factor*1,DistanceToHeadPin+PinsTriangleRadius*(1+sqrt(2.0f)/2)),
+        ArrowTimeForWay));
   arrow_->addAnimator(anim);
   anim->drop();
   arrow_->setScale(Factor*vector3df(0.5,0.5,0.5));
@@ -157,9 +158,9 @@ void AloneBowlingImpl::printScore()
 {
   std::wstring wstr;
   //if(wstr.empty()) {
-    for(std::size_t i = 0; i < score_->numberOfFrames(); ++i) {
-      wstr += str(wformat(L"% 4d") % (i+1));
-    }
+  for(std::size_t i = 0; i < score_->numberOfFrames(); ++i) {
+    wstr += str(wformat(L"% 4d") % (i+1));
+  }
   //}
   printLine(wstr, 0);
   printLine(score_->str1(), 16);
@@ -170,7 +171,35 @@ void AloneBowlingImpl::printLine(const std::wstring& str, int y)
   for(std::size_t i = 0; i != str.size(); ++i) {
     std::map<wchar_t, irr::video::ITexture*>::iterator iter = map_.find(str[i]);
     if(iter != map_.end()) {
-		irrGUI_->addImage(iter->second, core::position2d<s32>(irr::s32(i)*16,y));
+      irrGUI_->addImage(iter->second, core::position2d<s32>(irr::s32(i)*16,y));
     }
   }
+}
+IrrlichtDevice* AloneBowlingImpl::myCreateDevice  (  video::E_DRIVER_TYPE  deviceType,  
+    const core::dimension2d< s32 > &  windowSize,  
+    u32  bits,  
+    bool  fullscreen,  
+    bool  stencilbuffer,  
+    bool  vsync,  
+    IEventReceiver *  receiver,  
+    const c8 *  sdk_version_do_not_use 
+    ) 
+{
+#ifdef WIN32
+  if (IrrlichtDevice* temp = createDevice(deviceType)) {
+    irr::video::IVideoModeList* vlist = temp->getVideoModeList();
+    dimension2d<s32> res = vlist->getVideoModeResolution(vlist->getVideoModeCount()-1);
+    temp->drop();
+#else
+    dimension2d<s32> res = dimension2d<s32>(1024, 768);
+#endif
+    resX_ = res.Width;
+    resY_ = res.Height;
+    if(IrrlichtDevice* result = createDevice(deviceType, dimension2d<s32>(resX_,resY_), bits, fullscreen, stencilbuffer, vsync, receiver, sdk_version_do_not_use))
+      return result;
+    else exit(1);
+#ifdef WIN32
+  }
+  else exit(1);
+#endif
 }

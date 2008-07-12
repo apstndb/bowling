@@ -21,6 +21,7 @@ class AloneBowling {
   private:
     boost::shared_ptr<AloneBowlingImpl> pimpl_;
 
+
   public:
     void CreateStartScene();
     void resetScene();
@@ -36,6 +37,8 @@ class AloneBowling {
     void stopArrow();
     void run();
     void misc();
+	unsigned int getResX();
+	unsigned int getResY();
     void start(unsigned int n);
     bool timeUp();
     void setState(GameState state);

@@ -6,6 +6,7 @@
 #include <iosfwd>
 #include "bowlingScore.h"
 #include "GameState.h"
+#include <irrlicht.h>
 namespace std {
   typedef unsigned int size_t;
 }
@@ -59,7 +60,18 @@ class Prototype;
 class AloneBowling;
 
 class AloneBowlingImpl {
+private:
+	irr::IrrlichtDevice* myCreateDevice  (  irr::video::E_DRIVER_TYPE  deviceType = irr::video::EDT_SOFTWARE,  
+		const irr::core::dimension2d< irr::s32 > &  windowSize = (irr::core::dimension2d< irr::s32 >(640, 480)),  
+		irr::u32  bits = 16,  
+  bool  fullscreen = false,  
+  bool  stencilbuffer = false,  
+  bool  vsync = false,  
+  irr::IEventReceiver *  receiver = 0,  
+  const irr::c8 *  sdk_version_do_not_use = IRRLICHT_SDK_VERSION 
+ ) ;
   public:
+	  	unsigned int resX_, resY_;
     btRigidBody* ball_;
     //bool running_;
     AloneBowling* parent_;

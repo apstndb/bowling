@@ -25,6 +25,7 @@ using namespace gui;
 void AloneBowling::run()
 {
   // Initialize irrlicht
+
   pimpl_->irrDevice_->getFileSystem()->addZipFileArchive("files.zip");
   pimpl_->irrDriver_->getTexture("wood.tga");
   pimpl_->irrDriver_->getTexture("sofmelogo.tga");
@@ -114,14 +115,14 @@ void AloneBowling::run()
 
     pimpl_->UpdatePhysics(deltaTime);
 
-    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,ResX,ResY));
+    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0,getResX(),getResY()));
     pimpl_->irrDriver_->beginScene(true, true, (state==GAME_LOGO||state==GAME_TITLE)?SColor(255,255,255,255):SColor(255, 0, 0, 0));
     pimpl_->irrScene_->drawAll();
 
     pimpl_->irrGUI_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[2]);
-    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,ResX/3,ResY/3+48));
+    pimpl_->irrDriver_->setViewPort(rect<s32>(0,0+48,getResX()/3,getResY()/3+48));
     pimpl_->irrScene_->drawAll();
 
     pimpl_->irrScene_->setActiveCamera(camera[0]);
@@ -242,11 +243,11 @@ void AloneBowling::setState(GameState state)
   switch(state) {
     case GAME_LOGO:
       pimpl_->irrGUI_->clear();
-      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(ResX/2-1024/2,ResY/2-128/2));
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sofmelogo.tga"), position2d<s32>(getResX()/2-1024/2,getResY()/2-128/2));
       break;
     case GAME_TITLE:
       pimpl_->irrGUI_->clear();
-      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(ResX/2-640/2,ResY/2-480/2));
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("titlelogo.tga"), position2d<s32>(getResX()/2-640/2,getResY()/2-480/2));
       break;
     case GAME_RUNNING:
       if(getState() == GAME_WAIT) pimpl_->setTimer(TimeUp);
@@ -256,7 +257,7 @@ void AloneBowling::setState(GameState state)
       pimpl_->setupArrow();
       break;
     case GAME_RESULT:
-      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sign.tga"), position2d<s32>(ResX/2-200/2,ResY/2-25/2));
+      pimpl_->irrGUI_->addImage(pimpl_->irrDriver_->getTexture("sign.tga"), position2d<s32>(getResX()/2-200/2,getResY()/2-25/2));
       break;
     default:
       break;
@@ -284,3 +285,6 @@ void AloneBowling::stopArrow()
   anim->drop();
   pimpl_->arrow_ = 0;
 }
+
+unsigned int AloneBowling::getResX() { return pimpl_->resX_; }
+unsigned int AloneBowling::getResY() { return pimpl_->resY_; }

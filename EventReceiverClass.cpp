@@ -27,6 +27,7 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
       case KEY_KEY_8:
       case KEY_KEY_9:
       case KEY_KEY_0:
+		  if (game_->getState() == GAME_RESULT || game_->getState() == GAME_TITLE)
         game_->start((tEvent.KeyInput.Key==KEY_KEY_0)?
             10:tEvent.KeyInput.Key-KEY_KEY_0);
         break;
@@ -40,8 +41,8 @@ bool EventReceiverClass::OnEvent(const SEvent &tEvent) {
   else if(tEvent.EventType == EET_MOUSE_INPUT_EVENT) {
     switch(tEvent.MouseInput.Event) {
       case EMIE_LMOUSE_PRESSED_DOWN:
-		  zAxisSpin = -Spin*(btScalar(tEvent.MouseInput.X)/ResX-0.5f);
-		  xAxisSpin = Spin*(btScalar(tEvent.MouseInput.Y)/ResY-0.5f);
+		  zAxisSpin = -Spin*(btScalar(tEvent.MouseInput.X)/game_->getResX()-0.5f);
+		  xAxisSpin = Spin*(btScalar(tEvent.MouseInput.Y)/game_->getResY()-0.5f);
         if(game_->getState()==GAME_WAIT) {
           game_->BallSetVelocity(BallSpeed*getXZVector(game_->getArrowRad()),
 			btVector3(xAxisSpin, 0.0f, zAxisSpin));
